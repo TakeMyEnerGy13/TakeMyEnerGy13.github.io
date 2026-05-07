@@ -1,0 +1,278 @@
+/* ----- Liquid-glass loupe + bilingual text translation ----- */
+
+:root {
+  --lens-radius: 118px;
+  --lens-mx: 50vw;
+  --lens-my: 50vh;
+}
+
+/* The cursor itself is an in-flow fixed element. SVG filters defined inline
+   in `LensProvider` handle the chromatic aberration on text inside the lens. */
+.lens-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: calc(var(--lens-radius) * 2);
+  height: calc(var(--lens-radius) * 2);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate3d(
+    calc(var(--lens-mx) - var(--lens-radius)),
+    calc(var(--lens-my) - var(--lens-radius)),
+    0
+  );
+  transition: opacity 220ms ease;
+  will-change: transform;
+  opacity: 1;
+  /* Soft contact shadow grounds the lens on busy backgrounds */
+  filter:
+    drop-shadow(0 14px 28px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
+}
+
+.lens-cursor.is-hidden {
+  opacity: 0;
+}
+
+/* Glass body — dark, slightly tinted glass orb (monopo style). The orb is
+   mostly opaque dark with a faint cool tint, so the chromatic-aberrated
+   text overlay reads cleanly against it. The signature bottom-left
+   specular crescent is layered on top via .lens-cursor__shine. */
+.lens-cursor__glass {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 50% 100%,
+      rgba(120, 160, 220, 0.22),
+      rgba(120, 160, 220, 0) 55%
+    ),
+    radial-gradient(
+      circle at 30% 25%,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0) 35%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(8, 10, 14, 0.28) 0%,
+      rgba(0, 0, 0, 0.42) 100%
+    );
+  backdrop-filter: blur(1px) saturate(1.05) brightness(0.92);
+  -webkit-backdrop-filter: blur(1px) saturate(1.05) brightness(0.92);
+}
+
+/* Outer rim — very thin hairline that just defines the silhouette */
+.lens-cursor__rim {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    inset 0 0 0 0.5px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+/* Inner ring — barely perceptible inner edge */
+.lens-cursor__refraction {
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+/* Bottom-left specular CRESCENT — the signature monopo lens highlight.
+   A bright thin arc that hugs the inside of the rim from roughly 7 o'clock
+   to 5 o'clock, fading out toward the top of the orb. We build it from
+   directional inset box-shadows on the orb itself (no mask needed):
+     • inset Xpx -Ypx with rgba(white) → bright glow on bottom-LEFT inner rim
+     • a softer cool/blue layer warms it toward the bottom-CENTER
+     • a faint top inset adds a subtle environment fill on the upper inside */
+.lens-cursor__shine {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow:
+    /* Crisp inner edge of the crescent (very tight, white) */
+    inset 6px -8px 6px -4px rgba(255, 255, 255, 0.70),
+    /* Main soft crescent (wide, white) */
+    inset 14px -18px 28px -10px rgba(255, 255, 255, 0.85),
+    /* Cool blue tint on the lower portion (matches monopo's sky-reflection) */
+    inset 4px -10px 26px -10px rgba(160, 195, 255, 0.55),
+    /* Faint dark vignette near the top inner edge to add sphere depth */
+    inset 0 12px 24px -10px rgba(0, 0, 0, 0.55);
+}
+
+/* Center ring — thin circle marking the exact click point of the lens. */
+.lens-cursor__center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  margin-left: -5px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+}
+
+/* Top-right specular GLINT — small, sharp pinpoint highlight (the orb
+   reflecting an environment light source). */
+.lens-cursor__glint {
+  position: absolute;
+  top: 14%;
+  right: 18%;
+  width: 14%;
+  height: 14%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 255, 255, 0.25) 35%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  filter: blur(1px);
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* ---- Bilingual text translation ----------------------------------------
+
+   Each .tlens wrapper is registered with LensProvider. JS writes the mouse
+   position (in the wrapper's local coords) into --tlens-x / --tlens-y on
+   the wrapper. Both child layers inherit those vars:
+
+     • .tlens__en is masked OUT inside the lens circle → English disappears
+       where the lens is.
+     • .tlens__ru is clipped TO the lens circle → Russian appears only there,
+       with the chromatic-aberration filter for a real-glass refraction look.
+
+   That gives a CLEAN replacement (EN → RU) without text stacking. */
+
+.tlens {
+  position: relative;
+  display: inline-block;
+  /* Default: lens is far away, both layers behave normally. */
+  --tlens-x: -9999px;
+  --tlens-y: -9999px;
+}
+
+/* Block variant: stretches T to fill the parent width so the lens
+   activates across the entire line — not just over the text glyphs.
+   Also forces .tlens__en to block so its mask coordinate space matches
+   the parent block — otherwise the inline span's box is narrower than
+   the block and the mask circle never intersects it correctly. */
+.tlens-block {
+  display: block;
+}
+
+.tlens-block > .tlens__en {
+  display: block;
+}
+
+.tlens-block > .tlens__ru {
+  right: 0;
+  width: 100%;
+  min-width: unset;
+  bottom: auto;
+  height: auto;
+}
+
+
+/* Mask English OUT inside the lens circle.
+   radial-gradient defines alpha:
+     - inside `--lens-radius`: transparent → English hidden
+     - outside `--lens-radius`: black (opaque) → English visible
+   1px feather avoids hairline aliasing at the boundary. */
+.tlens__en {
+  -webkit-mask-image: radial-gradient(
+    circle var(--lens-radius) at var(--tlens-x) var(--tlens-y),
+    transparent 0,
+    transparent calc(var(--lens-radius) - 1px),
+    #000 var(--lens-radius)
+  );
+  mask-image: radial-gradient(
+    circle var(--lens-radius) at var(--tlens-x) var(--tlens-y),
+    transparent 0,
+    transparent calc(var(--lens-radius) - 1px),
+    #000 var(--lens-radius)
+  );
+  -webkit-mask-mode: alpha;
+  mask-mode: alpha;
+}
+
+.tlens__ru {
+  position: absolute;
+  /* No right: 0 — lets the element grow wider than the English container
+     so Russian words that are wider than their English equivalent aren't
+     clipped. Block context (.tlens-block) overrides this below. */
+  top: 0;
+  left: 0;
+  bottom: 0;
+  min-width: 100%;
+  width: max-content;
+  pointer-events: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  text-transform: inherit;
+  text-align: inherit;
+  white-space: inherit;
+  font-weight: inherit;
+  height: 100%;
+  /* Render above the lens-cursor (z=9999) so the orb appears tinted-glass
+     and the chromatic-aberrated Russian text reads on top of it. */
+  z-index: 10000;
+
+  /* Soft circular reveal: fully opaque well inside the lens, fading out
+     near the rim so the chromatic-aberration RGB boundary is hidden under
+     the orb's rim/shadow rather than ending in a hard-cut rainbow stripe. */
+  -webkit-mask-image: radial-gradient(
+    circle var(--lens-radius) at var(--tlens-x) var(--tlens-y),
+    #000 0,
+    #000 calc(var(--lens-radius) - 24px),
+    rgba(0, 0, 0, 0.6) calc(var(--lens-radius) - 10px),
+    transparent var(--lens-radius)
+  );
+  mask-image: radial-gradient(
+    circle var(--lens-radius) at var(--tlens-x) var(--tlens-y),
+    #000 0,
+    #000 calc(var(--lens-radius) - 24px),
+    rgba(0, 0, 0, 0.6) calc(var(--lens-radius) - 10px),
+    transparent var(--lens-radius)
+  );
+  -webkit-mask-mode: alpha;
+  mask-mode: alpha;
+  /* Allow Russian text wider than the English container to overflow and still
+     be painted by the mask — without this, mask-clip: border-box (default)
+     cuts the gradient at the element's right edge, clipping wider RU words. */
+  -webkit-mask-clip: no-clip;
+  mask-clip: no-clip;
+
+  /* Apply chromatic-aberration via SVG filter (defined in LensProvider) */
+  filter: url(#tlens-chroma);
+  /* Slight magnification to mimic a real loupe */
+  transform: scale(1.06);
+  transform-origin: var(--tlens-x) var(--tlens-y);
+}
+
+/* Mobile / no-pointer fallback */
+@media (hover: none), (pointer: coarse) {
+  .lens-cursor {
+    display: none;
+  }
+  .tlens__ru {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lens-cursor {
+    transition: none;
+  }
+}
