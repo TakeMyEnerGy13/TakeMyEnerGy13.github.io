@@ -1,5 +1,7 @@
 # Portfolio — TakeMyEnerGy (AI Engineer)
 
+🔗 **Live site:** https://takemyenergy13.github.io/
+
 Personal portfolio site built with Vite + React + TypeScript and Tailwind CSS v4.
 Visual language follows the **monopo london** design system: midnight canvas,
 Roobert (with Space Grotesk fallback), 0.15em letter-spacing, and a Nebula
