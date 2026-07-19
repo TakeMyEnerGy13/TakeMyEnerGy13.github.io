@@ -45,7 +45,7 @@ export function About() {
                 <T base="ru" en="Interests" ru="Интересы" />
               </div>
               <div className="font-bold">
-                <T base="ru" en="Agents · Image-gen · UI" ru="Агенты · Image-gen · UI" />
+                <T base="ru" en="AI agents" ru="ИИ-агенты" />
               </div>
             </li>
             <li className="border-t border-[var(--color-medium-gray)] pt-[var(--spacing-14)]">
