@@ -254,11 +254,18 @@
   -webkit-mask-clip: no-clip;
   mask-clip: no-clip;
 
-  /* Apply chromatic-aberration via SVG filter (defined in LensProvider) */
-  filter: url(#tlens-chroma);
   /* Slight magnification to mimic a real loupe */
   transform: scale(1.03);
   transform-origin: var(--tlens-x) var(--tlens-y);
+}
+
+/* Chromatic aberration (SVG filter defined in LensProvider) is applied only
+   while the lens is near — LensProvider toggles `is-near`. Keeping the
+   filter off distant elements avoids paying its isolated-layer rendering
+   cost across the whole page. At the toggle distance the mask is fully
+   transparent, so the switch is never visible. */
+.tlens.is-near > .tlens__ru {
+  filter: url(#tlens-chroma);
 }
 
 /* ---- Swap mode (multi-line text) ---------------------------------------

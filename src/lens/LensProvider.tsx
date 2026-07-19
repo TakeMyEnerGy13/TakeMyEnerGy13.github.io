@@ -86,10 +86,14 @@ export function LensProvider({ children }: Props) {
         // *own* local coordinate space so its clip mask follows the lens.
         if (dist < lensRadius + 40) {
           tracking.add(el);
+          // `is-near` also gates the chromatic-aberration SVG filter, so
+          // only elements under/near the lens pay its rendering cost.
+          el.classList.add('is-near');
           el.style.setProperty('--tlens-x', `${mx - rect.left}px`);
           el.style.setProperty('--tlens-y', `${my - rect.top}px`);
         } else if (tracking.has(el)) {
           tracking.delete(el);
+          el.classList.remove('is-near');
           el.style.setProperty('--tlens-x', '-9999px');
           el.style.setProperty('--tlens-y', '-9999px');
         }

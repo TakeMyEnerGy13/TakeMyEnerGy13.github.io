@@ -172,10 +172,13 @@ export function NebulaCanvas({ className, opacity = 1 }: Props) {
     // The fBm shader is expensive per pixel, and the output is soft and
     // organic — render at a fraction of CSS resolution and let the browser
     // upscale; visually indistinguishable, massively cheaper on the GPU.
-    const RENDER_SCALE = 0.5;
+    // Touch devices get an even tighter budget: small screens hide the
+    // difference and battery matters more.
+    const coarse = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    const RENDER_SCALE = coarse ? 0.35 : 0.5;
     const MAX_INTERNAL_WIDTH = 1100;
     // Slow-morphing background doesn't need 60fps.
-    const FRAME_MS = 1000 / 30;
+    const FRAME_MS = 1000 / (coarse ? 24 : 30);
 
     let scale = RENDER_SCALE;
     let mx = window.innerWidth / 2;
