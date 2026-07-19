@@ -52,9 +52,9 @@ export function Contact() {
           className="mt-[var(--spacing-25)] font-extrabold uppercase leading-[0.95]"
           style={{ fontSize: 'clamp(48px, 10vw, 140px)', letterSpacing: '0.03em' }}
         >
-          <span className="block"><T block en="LET'S" ru="ДАВАЙ" /></span>
-          <span className="block"><T block en="BUILD" ru="СДЕЛАЕМ" /></span>
-          <span className="block"><T block en="SOMETHING." ru="КОЕ-ЧТО." /></span>
+          <span className="block"><T block en="LET'S" ru="ДАВАЙТЕ" /></span>
+          <span className="block"><T block en="BUILD" ru="СТРОИТЬ" /></span>
+          <span className="block"><T block en="TOGETHER." ru="ВМЕСТЕ." /></span>
         </h2>
 
         <ul className="mt-[var(--spacing-55)] flex flex-col">
