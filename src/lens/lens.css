@@ -56,11 +56,12 @@
     ),
     radial-gradient(
       circle at 50% 50%,
-      rgba(8, 10, 14, 0.28) 0%,
-      rgba(0, 0, 0, 0.42) 100%
+      rgba(8, 10, 14, 0.34) 0%,
+      rgba(0, 0, 0, 0.5) 100%
     );
-  backdrop-filter: blur(1px) saturate(1.05) brightness(0.92);
-  -webkit-backdrop-filter: blur(1px) saturate(1.05) brightness(0.92);
+  /* No backdrop-filter: it forced the browser to resample the animating
+     WebGL background under the orb on every frame. The slightly denser
+     tint above approximates the old brightness(0.92) at zero cost. */
 }
 
 /* Outer rim — very thin hairline that just defines the silhouette */

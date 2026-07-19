@@ -58,15 +58,30 @@ float fbm(vec2 p){
   return v;
 }
 
+// 3-octave variant for the low-frequency warp fields — their high octaves
+// only add sub-pixel jitter that the reduced render resolution can't show
+// anyway, so skipping them is free detail-wise and ~30% cheaper overall.
+float fbm3(vec2 p){
+  float v = 0.0;
+  float a = 0.5;
+  mat2 r = mat2(0.8, 0.6, -0.6, 0.8);
+  for (int i = 0; i < 3; i++){
+    v += a * vnoise(p);
+    p = r * p * 2.05;
+    a *= 0.55;
+  }
+  return v;
+}
+
 // Domain-warped fBm — gives organic plumes that twist around each other.
 float warped(vec2 p, float t){
   vec2 q = vec2(
-    fbm(p + vec2(0.0, 0.0) + 0.15 * t),
-    fbm(p + vec2(5.2, 1.3) - 0.10 * t)
+    fbm3(p + vec2(0.0, 0.0) + 0.15 * t),
+    fbm3(p + vec2(5.2, 1.3) - 0.10 * t)
   );
   vec2 r = vec2(
-    fbm(p + 4.0 * q + vec2(1.7, 9.2) + 0.08 * t),
-    fbm(p + 4.0 * q + vec2(8.3, 2.8) - 0.06 * t)
+    fbm3(p + 4.0 * q + vec2(1.7, 9.2) + 0.08 * t),
+    fbm3(p + 4.0 * q + vec2(8.3, 2.8) - 0.06 * t)
   );
   return fbm(p + 4.0 * r);
 }
