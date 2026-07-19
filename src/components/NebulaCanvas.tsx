@@ -177,8 +177,10 @@ export function NebulaCanvas({ className, opacity = 1 }: Props) {
     const coarse = window.matchMedia('(hover: none), (pointer: coarse)').matches;
     const RENDER_SCALE = coarse ? 0.35 : 0.5;
     const MAX_INTERNAL_WIDTH = 1100;
-    // Slow-morphing background doesn't need 60fps.
-    const FRAME_MS = 1000 / (coarse ? 24 : 30);
+    // Desktop runs uncapped (0): the reduced internal resolution already
+    // cut the GPU cost ~12x, and a capped rAF produces visibly uneven
+    // frame pacing on smooth gradients. Touch devices keep a 30fps cap.
+    const FRAME_MS = coarse ? 1000 / 30 : 0;
 
     let scale = RENDER_SCALE;
     let mx = window.innerWidth / 2;
@@ -225,8 +227,12 @@ export function NebulaCanvas({ className, opacity = 1 }: Props) {
     const render = (now: number) => {
       if (disposed) return;
       raf = requestAnimationFrame(render);
-      if (now - last < FRAME_MS) return;
-      last = now;
+      if (FRAME_MS > 0) {
+        if (now - last < FRAME_MS) return;
+        // Accumulator keeps the cadence even instead of drifting between
+        // 1x and 2x the target interval on a 60Hz rAF clock.
+        last = now - ((now - last) % FRAME_MS);
+      }
       drawFrame();
     };
 
