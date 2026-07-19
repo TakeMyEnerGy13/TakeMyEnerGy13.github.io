@@ -32,15 +32,21 @@ export function About() {
           <ul className="mt-[var(--spacing-55)] grid grid-cols-2 md:grid-cols-4 gap-[var(--spacing-25)] text-[var(--text-caption)] uppercase tracking-brand">
             <li className="border-t border-[var(--color-medium-gray)] pt-[var(--spacing-14)]">
               <div className="opacity-60 mb-[var(--spacing-8)]">Focus</div>
-              <div className="font-bold">LLM · RAG · Agents</div>
+              <div className="font-bold">
+                <T base="ru" en="Knowledge" ru="Знания" />
+              </div>
             </li>
             <li className="border-t border-[var(--color-medium-gray)] pt-[var(--spacing-14)]">
               <div className="opacity-60 mb-[var(--spacing-8)]">Languages</div>
-              <div className="font-bold">Python · TS · Rust</div>
+              <div className="font-bold">Python · English</div>
             </li>
             <li className="border-t border-[var(--color-medium-gray)] pt-[var(--spacing-14)]">
-              <div className="opacity-60 mb-[var(--spacing-8)]">Cloud</div>
-              <div className="font-bold">AWS · GCP · Modal</div>
+              <div className="opacity-60 mb-[var(--spacing-8)]">
+                <T base="ru" en="Interests" ru="Интересы" />
+              </div>
+              <div className="font-bold">
+                <T base="ru" en="Agents · Image-gen · UI" ru="Агенты · Image-gen · UI" />
+              </div>
             </li>
             <li className="border-t border-[var(--color-medium-gray)] pt-[var(--spacing-14)]">
               <div className="opacity-60 mb-[var(--spacing-8)]">
