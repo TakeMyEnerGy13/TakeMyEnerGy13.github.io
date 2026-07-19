@@ -17,8 +17,8 @@ export const PROFILE = {
     ru: 'Создаю системы, в которых машины думают ясно.',
   },
   blurb: {
-    en: "I'm 24. Burning for neural networks: I build bots, pipelines and image generators — and design their interfaces myself. I believe the best way to understand a technology is to ship something that works. Still in the endless process of figuring myself out — and I like it that way.",
-    ru: 'Мне 24. «Горю» нейросетями: собираю ботов, пайплайны и генераторы картинок — и сам рисую им интерфейсы. Верю, что лучший способ понять технологию — довести её до работающей вещи. Всё ещё в процессе бесконечного познания себя — и мне это нравится.',
+    en: "I'm 24. Burning for neural networks: I build bots, pipelines and image generators — and design their interfaces myself. I believe the best way to understand a technology is to go and get your hands on it. In the endless process of discovering myself and the world.",
+    ru: 'Мне 24. «Горю» нейросетями: собираю ботов, пайплайны и генераторы картинок — и сам рисую им интерфейсы. Верю, что лучший способ понять технологию — пойти и «пощупать» её на практике. В процессе бесконечного познания себя и мира.',
   },
   location: { en: 'Remote · UTC+3', ru: 'Удалённо · UTC+3' },
   github: 'https://github.com/TakeMyEnerGy13',
