@@ -169,14 +169,26 @@ export function NebulaCanvas({ className, opacity = 1 }: Props) {
     const uTime = gl.getUniformLocation(prog, 'u_time');
     const uMouse = gl.getUniformLocation(prog, 'u_mouse');
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+    // The fBm shader is expensive per pixel, and the output is soft and
+    // organic — render at a fraction of CSS resolution and let the browser
+    // upscale; visually indistinguishable, massively cheaper on the GPU.
+    const RENDER_SCALE = 0.5;
+    const MAX_INTERNAL_WIDTH = 1100;
+    // Slow-morphing background doesn't need 60fps.
+    const FRAME_MS = 1000 / 30;
+
+    let scale = RENDER_SCALE;
     let mx = window.innerWidth / 2;
     let my = window.innerHeight / 2;
 
     const resize = () => {
       const r = canvas.getBoundingClientRect();
-      const w = Math.max(1, Math.floor(r.width * dpr));
-      const h = Math.max(1, Math.floor(r.height * dpr));
+      scale = RENDER_SCALE;
+      if (r.width * scale > MAX_INTERNAL_WIDTH) {
+        scale = MAX_INTERNAL_WIDTH / r.width;
+      }
+      const w = Math.max(1, Math.floor(r.width * scale));
+      const h = Math.max(1, Math.floor(r.height * scale));
       if (canvas.width !== w || canvas.height !== h) {
         canvas.width = w;
         canvas.height = h;
@@ -187,8 +199,8 @@ export function NebulaCanvas({ className, opacity = 1 }: Props) {
 
     const onMove = (e: MouseEvent) => {
       const r = canvas.getBoundingClientRect();
-      mx = (e.clientX - r.left) * dpr;
-      my = (r.height - (e.clientY - r.top)) * dpr; // flip Y for GL coords
+      mx = (e.clientX - r.left) * scale;
+      my = (r.height - (e.clientY - r.top)) * scale; // flip Y for GL coords
     };
 
     window.addEventListener('resize', resize);
@@ -198,29 +210,57 @@ export function NebulaCanvas({ className, opacity = 1 }: Props) {
 
     const start = performance.now();
     let raf = 0;
+    let last = 0;
+    let inView = true;
 
-    const render = () => {
-      if (disposed) return;
+    const drawFrame = () => {
       gl.uniform1f(uTime, (performance.now() - start) / 1000);
       gl.uniform2f(uMouse, mx, my);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
-      raf = requestAnimationFrame(render);
     };
-    raf = requestAnimationFrame(render);
 
-    // Pause when tab is hidden to save power.
-    const onVis = () => {
-      if (document.hidden) {
-        cancelAnimationFrame(raf);
-      } else {
+    const render = (now: number) => {
+      if (disposed) return;
+      raf = requestAnimationFrame(render);
+      if (now - last < FRAME_MS) return;
+      last = now;
+      drawFrame();
+    };
+
+    const reducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+
+    const updateLoop = () => {
+      cancelAnimationFrame(raf);
+      if (disposed || reducedMotion) return;
+      if (inView && !document.hidden) {
         raf = requestAnimationFrame(render);
       }
     };
+
+    // Render only while the canvas is actually on screen — the page has two
+    // nebula instances (hero + contact) and at most one is visible at a time.
+    const io = new IntersectionObserver((entries) => {
+      inView = entries[0].isIntersecting;
+      updateLoop();
+    });
+    io.observe(canvas);
+
+    const onVis = () => updateLoop();
     document.addEventListener('visibilitychange', onVis);
+
+    if (reducedMotion) {
+      // Single static frame.
+      drawFrame();
+    } else {
+      updateLoop();
+    }
 
     return () => {
       disposed = true;
       cancelAnimationFrame(raf);
+      io.disconnect();
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', onMove);
       document.removeEventListener('visibilitychange', onVis);

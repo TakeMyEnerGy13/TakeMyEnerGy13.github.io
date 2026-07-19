@@ -53,6 +53,11 @@ export function LensProvider({ children }: Props) {
         getComputedStyle(document.documentElement).getPropertyValue('--lens-radius'),
       ) || 118;
 
+    // Elements whose mask vars currently track the lens. Elements far from
+    // the cursor are parked once at -9999px and skipped — writing CSS vars
+    // on every registered element each frame forces needless style recalcs.
+    const tracking = new WeakSet<HTMLElement>();
+
     const flush = () => {
       raf = 0;
       dirty = false;
@@ -63,6 +68,9 @@ export function LensProvider({ children }: Props) {
 
       elements.current.forEach((el) => {
         const rect = el.getBoundingClientRect();
+        const nx = Math.min(Math.max(mx, rect.left), rect.right);
+        const ny = Math.min(Math.max(my, rect.top), rect.bottom);
+        const dist = Math.hypot(mx - nx, my - ny);
 
         if (el.dataset.tlensSwap !== undefined) {
           // Swap mode: cross-fade the whole element once the lens circle
@@ -70,19 +78,21 @@ export function LensProvider({ children }: Props) {
           // flicker while the lens hovers right at the boundary.
           const swapped = el.classList.contains('is-swapped');
           const threshold = swapped ? lensRadius + 30 : lensRadius - 25;
-          const nx = Math.min(Math.max(mx, rect.left), rect.right);
-          const ny = Math.min(Math.max(my, rect.top), rect.bottom);
-          const dist = Math.hypot(mx - nx, my - ny);
           el.classList.toggle('is-swapped', dist < threshold);
           return;
         }
 
         // Mask mode: write the mouse position expressed in the element's
         // *own* local coordinate space so its clip mask follows the lens.
-        const lx = mx - rect.left;
-        const ly = my - rect.top;
-        el.style.setProperty('--tlens-x', `${lx}px`);
-        el.style.setProperty('--tlens-y', `${ly}px`);
+        if (dist < lensRadius + 40) {
+          tracking.add(el);
+          el.style.setProperty('--tlens-x', `${mx - rect.left}px`);
+          el.style.setProperty('--tlens-y', `${my - rect.top}px`);
+        } else if (tracking.has(el)) {
+          tracking.delete(el);
+          el.style.setProperty('--tlens-x', '-9999px');
+          el.style.setProperty('--tlens-y', '-9999px');
+        }
       });
     };
 
