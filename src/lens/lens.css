@@ -257,8 +257,44 @@
   /* Apply chromatic-aberration via SVG filter (defined in LensProvider) */
   filter: url(#tlens-chroma);
   /* Slight magnification to mimic a real loupe */
-  transform: scale(1.06);
+  transform: scale(1.03);
   transform-origin: var(--tlens-x) var(--tlens-y);
+}
+
+/* ---- Swap mode (multi-line text) ---------------------------------------
+
+   EN and RU wrap at different points when their lengths differ, so the
+   partial circular mask produces mismatched line fragments on multi-line
+   text. In swap mode (`T swap`) LensProvider toggles `.is-swapped` when
+   the lens circle overlaps the element, and the WHOLE element cross-fades
+   EN → RU. Each language keeps its own natural line wrapping. */
+
+.tlens-swap > .tlens__en {
+  -webkit-mask-image: none;
+  mask-image: none;
+  opacity: 1;
+  filter: blur(0);
+  transition: opacity 320ms ease, filter 320ms ease;
+}
+
+.tlens-swap.is-swapped > .tlens__en {
+  opacity: 0;
+  filter: blur(7px);
+}
+
+.tlens-swap > .tlens__ru {
+  -webkit-mask-image: none;
+  mask-image: none;
+  /* No chroma / magnification — swap mode is about readability. */
+  filter: blur(7px);
+  transform: none;
+  opacity: 0;
+  transition: opacity 320ms ease, filter 320ms ease;
+}
+
+.tlens-swap.is-swapped > .tlens__ru {
+  opacity: 1;
+  filter: blur(0);
 }
 
 /* Mobile / no-pointer fallback */
@@ -273,6 +309,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .lens-cursor {
+    transition: none;
+  }
+  .tlens-swap > .tlens__en,
+  .tlens-swap > .tlens__ru {
     transition: none;
   }
 }

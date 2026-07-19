@@ -48,6 +48,11 @@ export function LensProvider({ children }: Props) {
     let raf = 0;
     let dirty = false;
 
+    const lensRadius =
+      parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue('--lens-radius'),
+      ) || 118;
+
     const flush = () => {
       raf = 0;
       dirty = false;
@@ -56,10 +61,24 @@ export function LensProvider({ children }: Props) {
       document.documentElement.style.setProperty('--lens-mx', `${mx}px`);
       document.documentElement.style.setProperty('--lens-my', `${my}px`);
 
-      // Update each registered RU element with the mouse position
-      // expressed in *its own* local coordinate space.
       elements.current.forEach((el) => {
         const rect = el.getBoundingClientRect();
+
+        if (el.dataset.tlensSwap !== undefined) {
+          // Swap mode: cross-fade the whole element once the lens circle
+          // overlaps its rect. Hysteresis (enter deeper than exit) prevents
+          // flicker while the lens hovers right at the boundary.
+          const swapped = el.classList.contains('is-swapped');
+          const threshold = swapped ? lensRadius + 30 : lensRadius - 25;
+          const nx = Math.min(Math.max(mx, rect.left), rect.right);
+          const ny = Math.min(Math.max(my, rect.top), rect.bottom);
+          const dist = Math.hypot(mx - nx, my - ny);
+          el.classList.toggle('is-swapped', dist < threshold);
+          return;
+        }
+
+        // Mask mode: write the mouse position expressed in the element's
+        // *own* local coordinate space so its clip mask follows the lens.
         const lx = mx - rect.left;
         const ly = my - rect.top;
         el.style.setProperty('--tlens-x', `${lx}px`);
@@ -146,7 +165,7 @@ export function LensProvider({ children }: Props) {
                 0 0 0 1 0"
               result="r"
             />
-            <feOffset in="r" dx="2.5" dy="0.4" result="rOff" />
+            <feOffset in="r" dx="1.1" dy="0.2" result="rOff" />
 
             <feColorMatrix
               in="SourceGraphic"
@@ -169,7 +188,7 @@ export function LensProvider({ children }: Props) {
                 0 0 0 1 0"
               result="b"
             />
-            <feOffset in="b" dx="-2.5" dy="-0.4" result="bOff" />
+            <feOffset in="b" dx="-1.1" dy="-0.2" result="bOff" />
 
             {/* Composite the channels with screen so overlapping areas
                 go back to white but edges keep their chromatic fringe. */}

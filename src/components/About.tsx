@@ -19,13 +19,13 @@ export function About() {
             style={{ fontSize: 'clamp(32px, 5vw, 56px)' }}
           >
             <T
-              block
+              swap
               en="I build LLM systems that don't fall apart in production."
               ru="Строю LLM-системы, которые не разваливаются в продакшене."
             />
           </h2>
           <p className="mt-[var(--spacing-35)] text-[var(--text-body-lg)] uppercase tracking-brand opacity-90 max-w-[60ch]">
-            <T block en={PROFILE.blurb.en} ru={PROFILE.blurb.ru} />
+            <T swap en={PROFILE.blurb.en} ru={PROFILE.blurb.ru} />
           </p>
 
           <ul className="mt-[var(--spacing-55)] grid grid-cols-2 md:grid-cols-4 gap-[var(--spacing-25)] text-[var(--text-caption)] uppercase tracking-brand">
