@@ -10,7 +10,7 @@ export function About() {
       <div className="grid grid-cols-12 gap-[var(--spacing-25)]">
         <div className="col-span-12 md:col-span-4">
           <span className="text-[var(--text-caption)] uppercase tracking-brand opacity-70">
-            <T en="(About)" ru="(Обо мне)" />
+            <T base="ru" en="(About)" ru="(Обо мне)" />
           </span>
         </div>
         <div className="col-span-12 md:col-span-8">
@@ -20,12 +20,13 @@ export function About() {
           >
             <T
               swap
+              base="ru"
               en="I build LLM systems that don't fall apart in production."
               ru="Строю LLM-системы, которые не разваливаются в продакшене."
             />
           </h2>
           <p className="mt-[var(--spacing-35)] text-[var(--text-body-lg)] uppercase tracking-brand opacity-90 max-w-[60ch]">
-            <T swap en={PROFILE.blurb.en} ru={PROFILE.blurb.ru} />
+            <T swap base="ru" en={PROFILE.blurb.en} ru={PROFILE.blurb.ru} />
           </p>
 
           <ul className="mt-[var(--spacing-55)] grid grid-cols-2 md:grid-cols-4 gap-[var(--spacing-25)] text-[var(--text-caption)] uppercase tracking-brand">
@@ -43,10 +44,10 @@ export function About() {
             </li>
             <li className="border-t border-[var(--color-medium-gray)] pt-[var(--spacing-14)]">
               <div className="opacity-60 mb-[var(--spacing-8)]">
-                <T en="Status" ru="Статус" />
+                <T base="ru" en="Status" ru="Статус" />
               </div>
               <div className="font-bold">
-                <T en="Available" ru="Свободен" />
+                <T base="ru" en="Available" ru="Свободен" />
               </div>
             </li>
           </ul>

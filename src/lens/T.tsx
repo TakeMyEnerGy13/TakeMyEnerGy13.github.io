@@ -13,6 +13,11 @@ type Props = {
    * element cross-fades EN → RU once the lens overlaps it.
    */
   swap?: boolean;
+  /**
+   * Which language is the base (always visible) layer; the other one
+   * shows under the lens. Defaults to 'en'.
+   */
+  base?: 'en' | 'ru';
 };
 
 /**
@@ -30,7 +35,11 @@ type Props = {
  *
  * This guarantees clean replacement instead of the two languages stacking.
  */
-export function T({ en, ru, className, block, swap }: Props) {
+export function T({ en, ru, className, block, swap, base = 'en' }: Props) {
+  // .tlens__en / .tlens__ru are layer ROLES (base layer / lens layer),
+  // not languages — `base` decides which text goes where.
+  const baseContent = base === 'ru' ? ru : en;
+  const lensContent = base === 'ru' ? en : ru;
   const wrapperRef = useRef<HTMLSpanElement | null>(null);
   const { register } = useLensRegistry();
 
@@ -75,9 +84,9 @@ export function T({ en, ru, className, block, swap }: Props) {
       data-tlens-swap={swap ? '' : undefined}
       className={`tlens${block || swap ? ' tlens-block' : ''}${swap ? ' tlens-swap' : ''}${className ? ' ' + className : ''}`}
     >
-      <span className="tlens__en">{en}</span>
+      <span className="tlens__en">{baseContent}</span>
       <span className="tlens__ru" aria-hidden="true">
-        {ru}
+        {lensContent}
       </span>
     </span>
   );

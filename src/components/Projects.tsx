@@ -47,7 +47,7 @@ export function Projects() {
                   </h3>
                 </div>
                 <div className="col-span-12 md:col-span-3 md:col-start-9 text-[var(--text-body-sm)] uppercase tracking-brand opacity-80">
-                  <T swap en={p.summary.en} ru={p.summary.ru} />
+                  <T swap base="ru" en={p.summary.en} ru={p.summary.ru} />
                 </div>
                 <div className="col-span-12 md:col-span-1 md:col-start-12 text-[var(--text-caption)] uppercase tracking-brand opacity-60 text-right">
                   {p.year}
