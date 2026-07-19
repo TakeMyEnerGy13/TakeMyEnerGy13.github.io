@@ -41,13 +41,13 @@ export function Hero() {
           }}
         >
           <span className="block">
-            <T block en="MAKE AI" ru="AI," />
+            <T block en="MAKE AI" ru="ЗАСТАВЛЮ" />
           </span>
           <span className="block">
-            <T block en="ACTUALLY" ru="КОТОРЫЙ" />
+            <T block en="ACTUALLY" ru="AI РЕАЛЬНО" />
           </span>
           <span className="block">
-            <T block en="WORK." ru="РАБОТАЕТ." />
+            <T block en="WORK." ru="РАБОТАТЬ." />
           </span>
         </h1>
 
