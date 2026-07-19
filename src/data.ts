@@ -17,8 +17,8 @@ export const PROFILE = {
     ru: 'Создаю системы, в которых машины думают ясно.',
   },
   blurb: {
-    en: 'Independent AI engineer focused on production-grade LLM pipelines, retrieval, evaluation, and the messy glue around them.',
-    ru: 'Независимый AI-инженер. Production-уровень LLM-пайплайнов, retrieval, evaluation и весь несентиментальный клей вокруг.',
+    en: "I'm 24. Burning for neural networks: I build bots, pipelines and image generators — and design their interfaces myself. I believe the best way to understand a technology is to ship something that works. Still in the endless process of figuring myself out — and I like it that way.",
+    ru: 'Мне 24. «Горю» нейросетями: собираю ботов, пайплайны и генераторы картинок — и сам рисую им интерфейсы. Верю, что лучший способ понять технологию — довести её до работающей вещи. Всё ещё в процессе бесконечного познания себя — и мне это нравится.',
   },
   location: { en: 'Remote · UTC+3', ru: 'Удалённо · UTC+3' },
   github: 'https://github.com/TakeMyEnerGy13',

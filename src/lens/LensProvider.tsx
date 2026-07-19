@@ -113,7 +113,14 @@ export function LensProvider({ children }: Props) {
       setHidden(false);
       schedule();
     };
-    const onLeave = () => setHidden(true);
+    const onLeave = () => {
+      setHidden(true);
+      // Park the lens far away so swapped/near elements revert to their
+      // base state instead of sticking while the cursor is off-window.
+      mx = -99999;
+      my = -99999;
+      schedule();
+    };
     const onEnter = () => setHidden(false);
     const onScroll = () => schedule();
     const onResize = () => schedule();

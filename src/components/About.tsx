@@ -21,8 +21,8 @@ export function About() {
             <T
               swap
               base="ru"
-              en="I build LLM systems that don't fall apart in production."
-              ru="Строю LLM-системы, которые не разваливаются в продакшене."
+              en="Developer. AI enthusiast. Designer."
+              ru="Разработчик. AI-энтузиаст. Дизайнер."
             />
           </h2>
           <p className="mt-[var(--spacing-35)] text-[var(--text-body-lg)] uppercase tracking-brand opacity-90 max-w-[60ch]">
