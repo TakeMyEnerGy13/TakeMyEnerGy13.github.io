@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="TakeMyEnerGy — разработчик и AI-энтузиаст. AI-агенты, Telegram-боты и веб-приложения: от идеи до работающей системы.">
+  <meta property="og:title" content="TakeMyEnerGy — Make AI actually work.">
+  <meta property="og:description" content="AI-агенты, боты и веб-приложения. Избранные проекты, навыки и контакты.">
+  <meta property="og:type" content="website">
+  <title>TakeMyEnerGy — AI Engineer & Creative Developer</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+  <link rel="preload" href="./assets/serif.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="./style.css">
+  <script src="./assets/vendor/gsap.min.js"></script>
+  <script src="./assets/vendor/SplitText.min.js"></script>
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#work">Перейти к проектам</a>
+  <header class="site-header">
+    <a class="wordmark" href="#top" aria-label="TakeMyEnerGy — в начало"><svg viewBox="0 0 28 34" aria-hidden="true"><path d="M16 1 3 19h10L11 33l14-20H15z" fill="currentColor"/></svg>take<span>my</span>energy<span class="wordmark-dot">®</span></a>
+    <nav aria-label="Основная навигация"><a href="#work">Проекты</a><a href="#websites" hidden>Сайты</a><a href="#about">Обо мне</a></nav>
+    <a class="header-contact" href="#contact">На связи <span aria-hidden="true">↗</span></a>
+  </header>
+  <main>
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <h1 id="hero-title">Make AI<br>actually work.</h1>
+        <p>Превращаю возможности AI в работающие продукты.<br> Агенты, боты и интерфейсы — от идеи до запуска.</p>
+        <div class="hero-actions"><a class="button" href="#work">Смотреть проекты <span aria-hidden="true">↗</span></a><a class="hero-secondary" href="#contact">Давай знакомиться <span aria-hidden="true">›</span></a></div>
+      </div>
+      <div class="planet-stage">
+        <div class="scene" role="img" aria-label="Вращающаяся Земля с реалистичным рельефом и ночными огнями. Вокруг — объёмные логотипы Claude, ChatGPT, Gemini и Perplexity с цветными частицами.">
+          <div class="scene-fallback" aria-hidden="true"><div class="fallback-earth"></div><img class="fallback-logo claude" src="./assets/claude.svg" alt=""><img class="fallback-logo chatgpt" src="./assets/chatgpt.svg" alt=""><img class="fallback-logo gemini" src="./assets/gemini.svg" alt=""><img class="fallback-logo perplexity" src="./assets/perplexity.svg" alt=""></div>
+          <canvas id="energy-scene" aria-hidden="true"></canvas>
+        </div>
+      </div>
+    </section>
+    <section class="work section-light" id="work" aria-labelledby="work-title">
+      
+      <div class="section-heading"><h2 id="work-title" lang="en">Ideas in action.</h2></div>
+      <article class="project project-featured">
+        <a class="project-visual hunter-visual" href="https://github.com/TakeMyEnerGy13/HeadHunter-agent" target="_blank" rel="noopener noreferrer"><div class="project-art" role="img" aria-label="Открыть HeadHunter Agent на GitHub">
+          <div class="hunter-orbit" aria-hidden="true"></div>
+          <div class="hunter-interface" aria-hidden="true"><div class="mock-header"><span class="hh-logo">hh<span>↗</span></span><div><strong>HeadHunter Agent</strong><small>Твой следующий шаг в карьере</small></div><span class="mock-status"></span></div><div class="mock-message">Найди работу, которая подходит тебе.<br>Остальное я возьму на себя.</div><div class="vacancy"><div class="vacancy-top"><span class="company-logo">py</span><span>Подобрано по твоему резюме</span><span class="match-badge">AI match</span></div><strong>Python Developer</strong><span>Удалённо · Backend & AI</span><div class="vacancy-tags"><span>Python</span><span>FastAPI</span><span>LLM</span></div><div class="vacancy-footer"><span class="vacancy-apply">Откликнуться</span><span class="vacancy-save">♡</span><span class="vacancy-more">···</span></div></div></div>
+          <span class="project-open" aria-hidden="true">↗</span>
+        </div></a>
+        <div class="project-info"><div class="project-category">AI agent / Telegram bot</div><h3><a href="https://github.com/TakeMyEnerGy13/HeadHunter-agent" target="_blank" rel="noopener noreferrer">HeadHunter Agent</a></h3><p>Бот, который берёт поиск работы на себя. Находит вакансии по расписанию, оценивает их с помощью LLM и пишет персональное сопроводительное письмо.</p><ul class="tags" aria-label="Технологии"><li>Python</li><li>Aiogram</li><li>HH API</li><li>LLM</li></ul><a class="text-link" href="https://github.com/TakeMyEnerGy13/HeadHunter-agent" target="_blank" rel="noopener noreferrer">Посмотреть код</a></div>
+      </article>
+      <div class="project-grid">
+        <article class="project project-learny">
+          <div class="project-crown" aria-hidden="true"><img src="./assets/learny-crown.png" alt="" width="116" height="116"></div>
+            <a class="project-award" href="https://x.com/Agentplace_io/status/2100842612869796129" target="_blank" rel="noopener noreferrer" aria-label="Победитель Agentplace Hackathon в номинации Best Agent — объявление в X">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 3h8v7a4 4 0 0 1-8 0V3Z M8 5H4v2a4 4 0 0 0 4 4 M16 5h4v2a4 4 0 0 1-4 4 M12 14v6 M8 21h8"/></svg>
+              <span>Победитель Agentplace Hackathon <strong>Best Agent</strong></span><span aria-hidden="true">↗</span>
+            </a>
+          <a class="project-visual learny-visual" href="https://mdza6hp6kqzf.run.agentplace.io/" target="_blank" rel="noopener noreferrer">
+            <div class="project-art" role="img" aria-label="Открыть Learny.ai — языковую практику с AI">
+              
+              <div class="learny-interface" aria-hidden="true">
+                <div class="learny-header"><strong>.Learny</strong><span>Voice practice</span></div>
+                <div class="learny-languages"><span class="is-selected">EN</span><span>ES</span><span>DE</span><span>RU</span></div>
+                <div class="learny-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <div class="learny-prompt">“Tell me about your day.”</div>
+              </div>
+              <span class="project-open" aria-hidden="true">↗</span>
+            </div>
+          </a>
+          <div class="project-info">
+
+            <div class="project-category">Voice AI / Language learning</div>
+            <h3><a href="https://mdza6hp6kqzf.run.agentplace.io/" target="_blank" rel="noopener noreferrer">Learny.ai</a></h3>
+            <p>Языковая практика с AI-собеседником. Разговоры голосом, письменные упражнения и память о прошлых занятиях — чтобы продолжать с того места, где остановился.</p>
+            <ul class="tags" aria-label="Технологии"><li>React</li><li>TypeScript</li><li>Voice AI</li><li>Agentplace</li></ul>
+            <div class="project-links"><a class="text-link" href="https://mdza6hp6kqzf.run.agentplace.io/" target="_blank" rel="noopener noreferrer">Попробовать</a><a class="text-link" href="https://github.com/TakeMyEnerGy13/.Learny" target="_blank" rel="noopener noreferrer">Код на GitHub</a></div>
+          </div>
+        </article>
+        <article class="project">
+          <a class="project-visual music-visual" href="https://github.com/TakeMyEnerGy13/yandex-music-bot" target="_blank" rel="noopener noreferrer"><div class="project-art" role="img" aria-label="Открыть Yandex Music Bot на GitHub"><div class="record" aria-hidden="true"><div class="record-center"><img src="./assets/yandex-music.png" alt="" width="72" height="72"></div></div><div class="music-player" aria-hidden="true"><div class="mini-cover">↗</div><div><strong>Твоя музыка. Везде.</strong><span>Yandex Music → Any platform</span></div><div class="equalizer"><i></i><i></i><i></i><i></i></div></div><span class="project-open" aria-hidden="true">↗</span></div></a>
+          <div class="project-info"><div class="project-category">Music / API integration</div><h3><a href="https://github.com/TakeMyEnerGy13/yandex-music-bot" target="_blank" rel="noopener noreferrer">Yandex Music Bot</a></h3><p>Одна ссылка на трек — обложка, похожая музыка и ссылки на другие платформы. Прямо в Telegram, с inline-режимом и быстрым Redis-кэшем.</p><ul class="tags" aria-label="Технологии"><li>Python</li><li>Aiogram</li><li>Redis</li><li>Docker</li></ul><div class="project-links"><a class="text-link" href="https://github.com/TakeMyEnerGy13/yandex-music-bot" target="_blank" rel="noopener noreferrer">Код на GitHub</a></div></div>
+        </article>
+      </div>
+      <div class="work-bottom"><a class="github-button" href="https://github.com/TakeMyEnerGy13" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .75a11.25 11.25 0 0 0-3.56 21.92c.56.1.77-.24.77-.54v-2.1c-3.14.68-3.8-1.33-3.8-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.03-.7.08-.69.08-.69 1.14.08 1.73 1.16 1.73 1.16 1.01 1.73 2.65 1.23 3.3.94.1-.73.4-1.23.72-1.51-2.5-.28-5.13-1.25-5.13-5.56 0-1.23.44-2.23 1.16-3.02-.12-.29-.5-1.43.11-2.98 0 0 .95-.3 3.09 1.15a10.76 10.76 0 0 1 5.62 0c2.14-1.45 3.08-1.15 3.08-1.15.62 1.55.23 2.69.12 2.98.72.79 1.15 1.79 1.15 3.02 0 4.32-2.63 5.27-5.14 5.55.41.35.77 1.03.77 2.08v3.11c0 .3.2.65.78.54A11.25 11.25 0 0 0 12 .75Z"/></svg>Больше проектов на GitHub</a></div>
+    </section>
+    <section class="websites" id="websites" aria-labelledby="websites-title" hidden>
+      <div class="websites-heading"><h2 id="websites-title" lang="en">Websites.</h2><p>Дизайн и разработка<br>с помощью ИИ.</p></div>
+      <article class="website-entry">
+        <div class="website-copy"><div class="project-category">Лендинг / Интерактивный персонаж</div><h3>ХРУМ</h3><p>Лендинг концепта трекера привычек. Персонаж реагирует на курсор и клики, а форма заявки связывает сайт с Telegram-ботом и email-уведомлениями.</p><ul class="tags" aria-label="Технологии ХРУМ"><li>TypeScript</li><li>Fastify</li><li>Telegram</li></ul><div class="project-links"><a class="text-link" href="https://hrum-landing.taile9bb5d.ts.net/" target="_blank" rel="noopener noreferrer">Открыть сайт</a><a class="text-link" href="https://github.com/TakeMyEnerGy13/hrum-landing" target="_blank" rel="noopener noreferrer">Код на GitHub</a></div></div>
+        <a class="website-preview website-preview-hrum" href="https://hrum-landing.taile9bb5d.ts.net/" target="_blank" rel="noopener noreferrer" aria-label="Открыть сайт ХРУМ"><div class="website-browser" aria-hidden="true"><span></span><span></span><span></span><small>ХРУМ</small></div><img src="./assets/site-hrum.jpg" width="1440" height="1000" loading="lazy" decoding="async" alt="Сайт ХРУМ: оранжевый персонаж и заголовок «Заведи привычку»"></a>
+      </article>
+      <article class="website-entry">
+        <div class="website-copy"><div class="project-category">Туризм / Редизайн</div><h3>Проотдых</h3><p>Редизайн сайта туристического агентства: крупная типографика, акцент на подборе тура и адаптивная вёрстка. Отдельный визуальный стиль для путешествий.</p><ul class="tags" aria-label="Технологии Проотдых"><li>HTML</li><li>CSS</li><li>Responsive</li></ul><div class="project-links"><a class="text-link" href="https://takemyenergy13.github.io/prootdyh-redesign/glavnaya.html" target="_blank" rel="noopener noreferrer">Открыть сайт</a><a class="text-link" href="https://github.com/TakeMyEnerGy13/prootdyh-redesign" target="_blank" rel="noopener noreferrer">Код на GitHub</a></div></div>
+        <a class="website-preview website-preview-travel" href="https://takemyenergy13.github.io/prootdyh-redesign/glavnaya.html" target="_blank" rel="noopener noreferrer" aria-label="Открыть сайт Проотдых"><div class="website-browser" aria-hidden="true"><span></span><span></span><span></span><small>Проотдых</small></div><img src="./assets/site-prootdyh.jpg" width="1440" height="1000" loading="lazy" decoding="async" alt="Сайт Проотдых: фиолетовый первый экран с предложением подобрать тур"></a>
+      </article>
+    </section>
+    <section class="about section-light" id="about" aria-labelledby="about-title">
+      
+      <div class="about-content"><div class="about-text"><h2 id="about-title" lang="en">Curiosity<br>drives me.</h2><div class="about-copy"><p>Привет, я Артём. Разрабатываю AI-агентов, Telegram-ботов и веб-приложения на Python и TypeScript. Работаю с LLM, RAG и автоматизацией. Я также дизайнер: продумываю визуальный стиль и интерфейсы, уделяю внимание типографике, композиции и деталям.</p><p>Сегодня возможностей пробовать больше, чем когда-либо, а цена бездействия слишком высока, чтобы ждать идеального момента. Пробуй, хватай, грызи, борись, действуй!</p></div></div><div class="engine-stage"><canvas id="engine-scene" tabindex="0" role="img" aria-label="3D-двигатель. Перетаскивайте для вращения или используйте клавиши со стрелками."></canvas><span class="engine-fallback" aria-hidden="true">✳</span></div></div>
+    </section>
+    <section class="curiosity-quote" id="vibe" aria-label="Личный принцип">
+      <div class="quote-trail" aria-hidden="true"></div>
+      <blockquote><span class="quote-intro" lang="en">I’m not trying to sell myself.</span> <span class="quote-statement" lang="en">I’m just vibing.</span></blockquote>
+    </section>
+    <section class="experience" id="experience" aria-labelledby="experience-title">
+      <div class="experience-heading"><h2 id="experience-title" lang="en">Experience.</h2><span>Опыт работы и проектов</span></div>
+      <div class="experience-list">
+        <details class="experience-entry">
+          <summary data-company-logo="./assets/freelance-emoji.png" data-cursor-cutout><span class="experience-period">6 месяцев</span><span class="experience-role">Фриланс<span class="experience-place">AI Engineer</span></span><span class="experience-toggle" aria-hidden="true"></span></summary>
+          <div class="experience-detail"><p>Самостоятельная работа в роли AI Engineer.</p></div>
+        </details>
+        <details class="experience-entry">
+          <summary data-company-logo="./assets/company-creativity.png"><span class="experience-period">9 месяцев</span><span class="experience-role">Творчество чувств<span class="experience-place">AI Engineer</span></span><span class="experience-toggle" aria-hidden="true"></span></summary>
+          <div class="experience-detail"><p>Работа в проекте онлайн-школы «Творчество чувств» в роли AI Engineer.</p></div>
+        </details>
+        <details class="experience-entry">
+          <summary data-company-logo="./assets/company-whiterock.png"><span class="experience-period">2 месяца</span><span class="experience-role">WhiteRock<span class="experience-place">AI Engineer</span></span><span class="experience-toggle" aria-hidden="true"></span></summary>
+          <div class="experience-detail"><p>Работа в маркетинговом агентстве WhiteRock в роли AI Engineer.</p></div>
+        </details>
+        <details class="experience-entry">
+          <summary data-company-logo="./assets/company-tvaity.png"><span class="experience-period">4 месяца</span><span class="experience-role">Tvaity<span class="experience-place">AI Engineer</span></span><span class="experience-toggle" aria-hidden="true"></span></summary>
+          <div class="experience-detail"><p>Работа в проекте Tvaity в роли AI Engineer.</p></div>
+        </details>
+      </div>
+    </section>
+    <section class="contact" id="contact" aria-labelledby="contact-title"><h2 id="contact-title">Let’s build<br><span>something that matters.</span></h2><div class="contact-bottom"><a class="contact-primary" href="https://t.me/TakeMyEnerGy13" target="_blank" rel="noopener noreferrer">Обсудим твою идею <span aria-hidden="true">↗</span></a><div class="contact-links"><a href="mailto:takemyenergy1337@gmail.com">Email <span aria-hidden="true">↗</span></a><a href="https://github.com/TakeMyEnerGy13" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><button id="copy-email" type="button">Скопировать email <span aria-hidden="true">⧉</span></button></div></div><p id="copy-status" role="status" class="copy-status"></p></section>
+  </main>
+  <footer class="site-footer"><a class="footer-brand" href="#top">take<span>my</span>energy®</a></footer>
+</body>
+</html>
