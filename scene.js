@@ -174,9 +174,10 @@ export async function createEnergyScene(canvas,initiallyPaused=false){
  let paused=initiallyPaused,visible=true,lost=false,frame=0,previous=0,elapsed=0;
  let width=1,height=1,ratio=1,targetX=0,targetY=0,pointerX=0,pointerY=0,compact=false;
  const hero=canvas.closest('.hero');
- const hover=brands.map(()=>({x:0,y:0,amount:0,targetX:0,targetY:0,targetAmount:0}));
+ const hover=brands.map(()=>({x:0,y:0,vx:0,vy:0,targetX:0,targetY:0,active:false,returnAt:0}));
  const positions=()=>brands.map(brand=>[brand.position[0]*(compact?.73:1),brand.position[1],brand.position[2]]);
- function clearHover(){hover.forEach(h=>{h.targetX=0;h.targetY=0;h.targetAmount=0;});}
+ function clearHover(){hover.forEach(h=>{h.targetX=0;h.targetY=0;h.active=false;h.returnAt=0;});}
+ function releaseHover(h){if(h.active){h.active=false;h.returnAt=performance.now()+3000;}}
  function attributes(mesh,locations,stride){
   gl.bindBuffer(gl.ARRAY_BUFFER,mesh.buffer);for(let i=0;i<3;i++)gl.disableVertexAttribArray(i);
   locations.forEach((location,i)=>{if(location<0)return;gl.enableVertexAttribArray(location);gl.vertexAttribPointer(location,i===2?2:3,gl.FLOAT,false,stride*4,i*12);});
@@ -190,8 +191,8 @@ export async function createEnergyScene(canvas,initiallyPaused=false){
   if(lost)return;gl.viewport(0,0,width,height);gl.stencilMask(0xff);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT|gl.STENCIL_BUFFER_BIT);
   gl.useProgram(mainProgram);gl.uniform1f(mainUniforms.uAspect,width/height);gl.disable(gl.BLEND);gl.depthMask(true);
   const earthRotation=rotation(.13+pointerY*.06,2.7+elapsed*.022+pointerX*.08,-.16),earthPosition=[0,.05,0],earthScale=compact?1.77:2.15;
-  // Keep emitters and their surface lighting anchored while only the logos tilt.
-  const logoPositions=positions();
+  // Move each logo, its particle cloud and surface lighting together.
+  const logoPositions=positions().map((p,i)=>[p[0]+hover[i].x*.14,p[1]-hover[i].y*.14,p[2]]);
   gl.uniform3fv(mainUniforms['uLogoPositions[0]'],new Float32Array(logoPositions.flat()));
   // Depth testing occludes only particles physically behind the planet.
   gl.disable(gl.STENCIL_TEST);
@@ -200,14 +201,22 @@ export async function createEnergyScene(canvas,initiallyPaused=false){
   gl.useProgram(particleProgram);gl.uniform1f(particleUniforms.uAspect,width/height);gl.uniform1f(particleUniforms.uTime,elapsed);gl.uniform1f(particleUniforms.uRatio,ratio);
   brands.forEach((brand,i)=>{attributes(clouds[i],particleAttributes,6);gl.uniform3fv(particleUniforms.uPosition,logoPositions[i]);gl.uniform3fv(particleUniforms.uColor,brand.glow||brand.color);gl.drawArrays(gl.POINTS,0,clouds[i].count);});
   gl.disable(gl.STENCIL_TEST);gl.disable(gl.BLEND);gl.depthMask(true);gl.useProgram(mainProgram);
-  brands.forEach((brand,i)=>{const t=brand.tilt,h=hover[i];drawMesh(brandMeshes[i],logoPositions[i],brand.scale*(compact?.8:1)*(1+h.amount*.08),rotation(t[0]+h.y*.5,t[1]+h.x*.65,t[2]+h.x*.12),1,brand.color);});
+  brands.forEach((brand,i)=>{const t=brand.tilt,h=hover[i];drawMesh(brandMeshes[i],logoPositions[i],brand.scale*(compact?.8:1),rotation(t[0]+h.y*.10,t[1]+h.x*.14,t[2]-h.x*.06+h.y*.04),1,brand.color);});
  }
  function tick(now){
   frame=0;if(paused||!visible||document.hidden||lost){previous=0;return;}
   const delta=previous?Math.min((now-previous)/1000,.05):1/60;
   if(previous)elapsed+=delta;previous=now;pointerX+=(targetX-pointerX)*.04;pointerY+=(targetY-pointerY)*.04;
-  const response=1.-Math.exp(-delta*7.);
-  hover.forEach(h=>{h.x+=(h.targetX-h.x)*response;h.y+=(h.targetY-h.y)*response;h.amount+=(h.targetAmount-h.amount)*response;});
+  hover.forEach(h=>{
+   if(!h.active&&h.returnAt&&now>=h.returnAt){h.targetX=0;h.targetY=0;h.returnAt=0;}
+   // Analytic critically damped spring stays smooth across frame rates.
+   const omega=h.active||h.returnAt?2.8:.8,decay=Math.exp(-omega*delta);
+   for(const [axis,velocity,target] of [['x','vx','targetX'],['y','vy','targetY']]){
+    const offset=h[axis]-h[target],impulse=h[velocity]+omega*offset;
+    h[axis]=h[target]+(offset+impulse*delta)*decay;
+    h[velocity]=(h[velocity]-omega*impulse*delta)*decay;
+   }
+  });
   draw();frame=requestAnimationFrame(tick);
  }
  function schedule(){if(!frame&&!paused&&visible&&!document.hidden&&!lost)frame=requestAnimationFrame(tick);}
@@ -219,19 +228,25 @@ export async function createEnergyScene(canvas,initiallyPaused=false){
   if(paused||event.pointerType==='touch')return;
   const rect=canvas.getBoundingClientRect();
   targetX=(event.clientX-rect.left)/rect.width*2-1;targetY=(event.clientY-rect.top)/rect.height*2-1;
-  clearHover();
   positions().forEach((p,i)=>{
    const d=10-p[2],cx=rect.left+rect.width/2+p[0]*3.4/d*rect.height/2,cy=rect.top+rect.height/2-p[1]*3.4/d*rect.height/2;
-   const radius=brands[i].scale*(compact?.8:1)*3.4/d*rect.height/2*1.5;
+   const radius=brands[i].scale*(compact?.8:1)*3.4/d*rect.height/2*2.8;
    const x=(event.clientX-cx)/radius,y=(event.clientY-cy)/radius;
-   if(Math.hypot(x,y)<1){hover[i].targetX=x;hover[i].targetY=y;hover[i].targetAmount=1;}
+   const distance=Math.hypot(x,y);
+   if(distance<1){
+    const h=hover[i];
+    h.active=true;h.returnAt=0;
+    const falloff=(1-distance)*(1-distance);
+    hover[i].targetX=-x*falloff*5;
+    hover[i].targetY=-y*falloff*5;
+   }else releaseHover(hover[i]);
   });
  },{passive:true});
- hero.addEventListener('pointerleave',()=>{targetX=0;targetY=0;clearHover();});
+ hero.addEventListener('pointerleave',()=>{targetX=0;targetY=0;hover.forEach(releaseHover);});
  canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();lost=true;cancelAnimationFrame(frame);frame=0;previous=0;canvas.parentElement.classList.remove('ready');});
  canvas.addEventListener('webglcontextrestored',()=>{try{initialize();lost=false;resize();canvas.parentElement.classList.add('ready');schedule();}catch{canvas.parentElement.classList.remove('ready');}});
  resize();schedule();
- return {setPaused(value){paused=value;if(paused){cancelAnimationFrame(frame);frame=0;previous=0;clearHover();hover.forEach(h=>{h.x=0;h.y=0;h.amount=0;});draw();}schedule();}};
+ return {setPaused(value){paused=value;if(paused){cancelAnimationFrame(frame);frame=0;previous=0;clearHover();hover.forEach(h=>{h.x=0;h.y=0;h.vx=0;h.vy=0;});draw();}schedule();}};
 }
 
 export { rotation, particleVertex, particleFragment };
