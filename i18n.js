@@ -1,4 +1,7 @@
 const translations = {
+  "Открыть портал My Design": "Open the My Design portal",
+  "Дизайн-портфолио скоро появится здесь.": "My design portfolio is coming soon.",
+  "Скоро": "Coming soon",
   "Работал разработчиком в команде WhiteRock Agency на стыке разработки и маркетинга. Создавал кастомные скиллы и инструменты для работы с рекламными кабинетами, писал скрипты и инструменты для улучшения воронок и привлечения лидов.": "Worked as a developer on the WhiteRock Agency team at the intersection of engineering and marketing. Created custom skills and tools for managing ad accounts, and wrote scripts and tools to improve funnels and attract more leads.",
   "Полностью перенёс AI-наставника на Python и реализовал для него память на Python и Aiogram.": "Migrated the AI mentor entirely to Python and implemented its memory using Python and Aiogram.",
   "Работал разработчиком в онлайн-школе «Творчество чувств»: отвечал за техническое сопровождение, исправление багов, тестирование и доработку ботов, интеграции с платёжными системами и GetCourse.": "Worked as a developer at the Tvorchestvo Chuvstv online school, handling technical support, bug fixes, bot testing and improvements, and integrations with payment systems and GetCourse.",

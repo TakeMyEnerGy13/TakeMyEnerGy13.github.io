@@ -1,3 +1,4 @@
+import { createPortalScene } from './portal-scene.js';
 import { createHelmetScene } from './helmet-scene.js';
 import { initializeLanguage, translate } from './i18n.js';
 import { createEngineScene } from './engine-scene.js';
@@ -10,6 +11,8 @@ let paused = reducedMotion.matches;
 let scene;
 let engineScene;
 let helmetScene;
+let portalScene;
+try { portalScene = createPortalScene(document.querySelector('#portal-scene'), paused); } catch (error) { console.warn('Portal scene unavailable.', error); }
 try { helmetScene = createHelmetScene(document.querySelector('#helmet-scene'), paused); } catch (error) { console.warn('Helmet scene unavailable.', error); }
 try { engineScene = createEngineScene(document.querySelector('#engine-scene'), paused); } catch (error) { console.warn('Engine scene unavailable.', error); }
 try { createVibeSection(document.querySelector('#vibe')); } catch (error) { console.warn('Vibe section unavailable.', error); }
@@ -25,7 +28,44 @@ async function initializeScene() {
 }
 initializeScene();
 
-reducedMotion.addEventListener('change', (event) => { paused = event.matches; scene?.setPaused(paused); engineScene?.setPaused(paused); helmetScene?.setPaused(paused); });
+reducedMotion.addEventListener('change', (event) => { paused = event.matches; scene?.setPaused(paused); engineScene?.setPaused(paused); helmetScene?.setPaused(paused); portalScene?.setPaused(paused); });
+
+const portalStage = document.querySelector('.portal-stage');
+const portalTrigger = portalStage.querySelector('.portal-trigger');
+const portalNotice = document.querySelector('#my-design .portal-notice');
+let portalPointerInside = false;
+let portalPinned = false;
+function setPortalOpen(open) {
+  portalStage.classList.toggle('is-open', open);
+  portalTrigger.setAttribute('aria-expanded', String(open));
+  portalScene?.setOpen(open);
+}
+portalTrigger.addEventListener('pointerenter', event => {
+  if (event.pointerType === 'touch') return;
+  portalPointerInside = true;
+  setPortalOpen(true);
+});
+portalStage.addEventListener('pointerleave', event => {
+  if (event.pointerType === 'touch') return;
+  portalPointerInside = false;
+  if (!portalStage.contains(document.activeElement) && !portalPinned) setPortalOpen(false);
+});
+portalStage.addEventListener('focusin', () => setPortalOpen(true));
+portalStage.addEventListener('focusout', () => queueMicrotask(() => {
+  if (!portalStage.contains(document.activeElement)) { portalPinned = false; if (!portalPointerInside) setPortalOpen(false); }
+}));
+function enterDesignPortfolio() {
+  portalPinned = true;
+  setPortalOpen(true);
+  portalNotice.hidden = false;
+}
+portalTrigger.addEventListener('click', enterDesignPortfolio);
+portalStage.addEventListener('keydown', event => {
+  if (event.key === 'Escape') { portalPinned = false; setPortalOpen(false); portalTrigger.focus({ preventScroll: true }); setPortalOpen(false); }
+});
+document.addEventListener('pointerdown', event => {
+  if (!portalStage.contains(event.target)) { portalPinned = false; portalPointerInside = false; setPortalOpen(false); }
+});
 
 // Company artwork replaces the pointer only when a mouse and the image are available.
 const companyPointer = document.createElement('img');

@@ -189,9 +189,10 @@ export async function createEnergyScene(canvas,initiallyPaused=false){
  let paused=initiallyPaused,visible=true,lost=false,frame=0,previous=0,elapsed=0;
  let width=1,height=1,ratio=1,targetX=0,targetY=0,pointerX=0,pointerY=0,compact=false;
  const hero=canvas.closest('.hero');
+ const cursor={x:0,y:0,rawX:0,rawY:0,inside:false,initialized:false};
  const hover=brands.map(()=>({x:0,y:0,vx:0,vy:0,targetX:0,targetY:0,active:false,returnAt:0}));
  const positions=()=>brands.map(brand=>[brand.position[0]*(compact?.73:1),brand.position[1],brand.position[2]]);
- function clearHover(){hover.forEach(h=>{h.targetX=0;h.targetY=0;h.active=false;h.returnAt=0;});}
+ function clearHover(){cursor.inside=false;cursor.initialized=false;hover.forEach(h=>{h.targetX=0;h.targetY=0;h.active=false;h.returnAt=0;});}
  function releaseHover(h){if(h.active){h.active=false;h.returnAt=performance.now()+3000;}}
  function attributes(mesh,locations,stride){
   gl.bindBuffer(gl.ARRAY_BUFFER,mesh.buffer);for(let i=0;i<3;i++)gl.disableVertexAttribArray(i);
@@ -207,7 +208,7 @@ export async function createEnergyScene(canvas,initiallyPaused=false){
   gl.useProgram(mainProgram);gl.uniform1f(mainUniforms.uAspect,width/height);gl.disable(gl.BLEND);gl.depthMask(true);
   const earthRotation=rotation(.13+pointerY*.06,2.7+elapsed*.022+pointerX*.08,-.16),earthPosition=[0,.05,0],earthScale=compact?1.77:2.15;
   // Move each logo, its particle cloud and surface lighting together.
-  const logoPositions=positions().map((p,i)=>[p[0]+hover[i].x*.14,p[1]-hover[i].y*.14,p[2]]);
+  const logoPositions=positions().map((p,i)=>[p[0]+hover[i].x*.10,p[1]-hover[i].y*.10,p[2]]);
   gl.uniform3fv(mainUniforms['uLogoPositions[0]'],new Float32Array(logoPositions.flat()));
   // Depth testing occludes only particles physically behind the planet.
   gl.disable(gl.STENCIL_TEST);
@@ -216,16 +217,36 @@ export async function createEnergyScene(canvas,initiallyPaused=false){
   gl.useProgram(particleProgram);gl.uniform1f(particleUniforms.uAspect,width/height);gl.uniform1f(particleUniforms.uTime,elapsed);gl.uniform1f(particleUniforms.uRatio,ratio);gl.uniform4f(particleUniforms.uPlanet,...earthPosition,earthScale);gl.uniform2f(particleUniforms.uViewport,width,height);
   brands.forEach((brand,i)=>{attributes(clouds[i],particleAttributes,6);gl.uniform3fv(particleUniforms.uPosition,logoPositions[i]);gl.uniform3fv(particleUniforms.uColor,brand.glow||brand.color);gl.drawArrays(gl.POINTS,0,clouds[i].count);});
   gl.disable(gl.STENCIL_TEST);gl.disable(gl.BLEND);gl.depthMask(true);gl.useProgram(mainProgram);
-  brands.forEach((brand,i)=>{const t=brand.tilt,h=hover[i];drawMesh(brandMeshes[i],logoPositions[i],brand.scale*(compact?.8:1),rotation(t[0]+h.y*.10,t[1]+h.x*.14,t[2]-h.x*.06+h.y*.04),1,brand.color);});
+  brands.forEach((brand,i)=>{const t=brand.tilt,h=hover[i];drawMesh(brandMeshes[i],logoPositions[i],brand.scale*(compact?.8:1),rotation(t[0]+h.y*.16,t[1]+h.x*.20,t[2]-h.x*.07+h.y*.04),1,brand.color);});
  }
  function tick(now){
   frame=0;if(paused||!visible||document.hidden||lost){previous=0;return;}
   const delta=previous?Math.min((now-previous)/1000,.05):1/60;
-  if(previous)elapsed+=delta;previous=now;pointerX+=(targetX-pointerX)*.04;pointerY+=(targetY-pointerY)*.04;
+  if(previous)elapsed+=delta;previous=now;
+  const pointerResponse=1-Math.exp(-delta*6);
+  pointerX+=(targetX-pointerX)*pointerResponse;pointerY+=(targetY-pointerY)*pointerResponse;
+  if(cursor.inside){
+   const response=1-Math.exp(-delta*8);
+   cursor.x+=(cursor.rawX-cursor.x)*response;cursor.y+=(cursor.rawY-cursor.y)*response;
+   positions().forEach((p,i)=>{
+    const d=10-p[2],radius=brands[i].scale*(compact?.8:1)*3.4/d*2.8;
+    const x=(cursor.x-p[0]*3.4/d)/radius,y=(cursor.y+p[1]*3.4/d)/radius;
+    const squaredDistance=x*x+y*y,h=hover[i];
+    if(squaredDistance<1){
+     // Zero slope at the boundary avoids a sudden kick on entering a halo.
+     const influence=(1-squaredDistance)*(1-squaredDistance);
+     h.active=true;h.returnAt=0;h.targetX=-x*influence*2;h.targetY=-y*influence*2;
+    }else releaseHover(h);
+   });
+  }
   hover.forEach(h=>{
-   if(!h.active&&h.returnAt&&now>=h.returnAt){h.targetX=0;h.targetY=0;h.returnAt=0;}
+   if(!h.active&&h.returnAt&&now>=h.returnAt){
+    const returnFade=Math.exp(-delta*.65);
+    h.targetX*=returnFade;h.targetY*=returnFade;
+    if(Math.hypot(h.targetX,h.targetY)<.0001){h.targetX=0;h.targetY=0;h.returnAt=0;}
+   }
    // Analytic critically damped spring stays smooth across frame rates.
-   const omega=h.active||h.returnAt?2.8:.8,decay=Math.exp(-omega*delta);
+   const omega=4.2,decay=Math.exp(-omega*delta);
    for(const [axis,velocity,target] of [['x','vx','targetX'],['y','vy','targetY']]){
     const offset=h[axis]-h[target],impulse=h[velocity]+omega*offset;
     h[axis]=h[target]+(offset+impulse*delta)*decay;
@@ -243,21 +264,12 @@ export async function createEnergyScene(canvas,initiallyPaused=false){
   if(paused||event.pointerType==='touch')return;
   const rect=canvas.getBoundingClientRect();
   targetX=(event.clientX-rect.left)/rect.width*2-1;targetY=(event.clientY-rect.top)/rect.height*2-1;
-  positions().forEach((p,i)=>{
-   const d=10-p[2],cx=rect.left+rect.width/2+p[0]*3.4/d*rect.height/2,cy=rect.top+rect.height/2-p[1]*3.4/d*rect.height/2;
-   const radius=brands[i].scale*(compact?.8:1)*3.4/d*rect.height/2*2.8;
-   const x=(event.clientX-cx)/radius,y=(event.clientY-cy)/radius;
-   const distance=Math.hypot(x,y);
-   if(distance<1){
-    const h=hover[i];
-    h.active=true;h.returnAt=0;
-    const falloff=(1-distance)*(1-distance);
-    hover[i].targetX=-x*falloff*5;
-    hover[i].targetY=-y*falloff*5;
-   }else releaseHover(hover[i]);
-  });
+  cursor.rawX=((event.clientX-rect.left)-rect.width/2)/(rect.height/2);
+  cursor.rawY=((event.clientY-rect.top)-rect.height/2)/(rect.height/2);
+  if(!cursor.initialized){cursor.x=cursor.rawX;cursor.y=cursor.rawY;cursor.initialized=true;}
+  cursor.inside=true;
  },{passive:true});
- hero.addEventListener('pointerleave',()=>{targetX=0;targetY=0;hover.forEach(releaseHover);});
+ hero.addEventListener('pointerleave',()=>{targetX=0;targetY=0;cursor.inside=false;cursor.initialized=false;hover.forEach(releaseHover);});
  canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();lost=true;cancelAnimationFrame(frame);frame=0;previous=0;canvas.parentElement.classList.remove('ready');});
  canvas.addEventListener('webglcontextrestored',()=>{try{initialize();lost=false;resize();canvas.parentElement.classList.add('ready');schedule();}catch{canvas.parentElement.classList.remove('ready');}});
  resize();schedule();
