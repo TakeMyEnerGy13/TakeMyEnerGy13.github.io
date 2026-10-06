@@ -154,7 +154,7 @@ export async function createEnergyScene(canvas,initiallyPaused=false){
   {data:logos[0],color:[1,.44,.24],surfaceLight:[2.8,.95,.32],position:[-2.8,.8,.4],tilt:[-.16,.42,-.18],scale:.64},
   {data:logos[1],color:[.84,.98,.9],glow:[.18,1,.55],position:[-2.3,-1.25,2.2],tilt:[.12,-.36,.17],scale:.58},
   {data:logos[2],color:[.3,.4,1],surfaceLight:[2.2,.65,2.8],position:[2.7,1.12,-.15],tilt:[-.12,-.4,.12],scale:.56},
-  {data:logos[3],color:[.18,.9,.94],position:[2.6,-1.22,1.3],tilt:[.13,-.37,-.16],scale:.53},
+  {data:logos[3],color:[.18,.9,.94],surfaceLight:[.45,2.25,2.35],position:[2.6,-1.22,1.3],tilt:[.13,-.37,-.16],scale:.53},
  ];
  const globeData=sphere(),particleData=brands.map((_,i)=>particles(112+i*89));
  let mainProgram,particleProgram,globe,brandMeshes,clouds,mainUniforms,particleUniforms,mainAttributes,particleAttributes;
