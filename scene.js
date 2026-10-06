@@ -57,18 +57,33 @@ void main(){
 const particleVertex = `
 attribute vec3 aPosition; attribute vec3 aNormal;
 uniform vec3 uPosition; uniform float uTime; uniform float uAspect; uniform float uRatio;
-varying float vAlpha;
+varying float vAlpha; varying float vDepth; varying float vSoft;
 void main(){
  vec3 p=aPosition;p.x+=sin(uTime*.25+aNormal.z)*.035;p.y+=cos(uTime*.18+aNormal.z)*.045;p+=uPosition;
  float d=10.-p.z;gl_Position=vec4(p.x*3.4/uAspect,p.y*3.4,(d*30.1-6.)/29.9,d);
+ vDepth=p.z;vSoft=step(20.,aNormal.x);
  gl_PointSize=aNormal.x*uRatio;vAlpha=aNormal.y*(.85+.15*sin(uTime*.7+aNormal.z));
 }`;
 const particleFragment = `
-precision mediump float; uniform vec3 uColor; varying float vAlpha;
+precision highp float; uniform vec3 uColor; uniform vec4 uPlanet; uniform vec2 uViewport;
+varying float vAlpha; varying float vDepth; varying float vSoft;
 void main(){float d=length(gl_PointCoord-.5)*2.;if(d>1.)discard;
  float core=exp(-d*d*4.)*(1.-smoothstep(.5,1.,d));
  vec3 glow=mix(uColor,vec3(1.),.18*exp(-d*d*24.));
- gl_FragColor=vec4(glow,core*vAlpha);
+ // Fade broad glow sprites before they intersect the spherical surface.
+ float softness=1.;
+ if(uPlanet.w>0.&&vSoft>.5){
+  vec2 screen=gl_FragCoord.xy/uViewport*2.-1.;
+  vec3 ray=vec3(screen.x*(uViewport.x/uViewport.y)/3.4,screen.y/3.4,-1.);
+  vec3 origin=vec3(0.,0.,10.)-uPlanet.xyz;
+  float a=dot(ray,ray),b=dot(origin,ray),c=dot(origin,origin)-uPlanet.w*uPlanet.w;
+  float discriminant=b*b-a*c;
+  if(discriminant>0.){
+   float surfaceZ=10.-(-b-sqrt(discriminant))/a;
+   softness=smoothstep(0.,.55,vDepth-surfaceZ);
+  }
+ }
+ gl_FragColor=vec4(glow,core*vAlpha*softness);
 }`;
 
 function rotation(x,y,z){
@@ -136,9 +151,9 @@ export async function createEnergyScene(canvas,initiallyPaused=false){
   ...['claude','chatgpt','gemini','perplexity'].map(name=>extrudeLogo(`./assets/${name}.svg`)),
  ]);
  const brands=[
-  {data:logos[0],color:[1,.44,.24],position:[-2.8,.8,.4],tilt:[-.16,.42,-.18],scale:.64},
+  {data:logos[0],color:[1,.44,.24],surfaceLight:[2.8,.95,.32],position:[-2.8,.8,.4],tilt:[-.16,.42,-.18],scale:.64},
   {data:logos[1],color:[.84,.98,.9],glow:[.18,1,.55],position:[-2.3,-1.25,2.2],tilt:[.12,-.36,.17],scale:.58},
-  {data:logos[2],color:[.3,.4,1],position:[2.7,1.12,-.15],tilt:[-.12,-.4,.12],scale:.56},
+  {data:logos[2],color:[.3,.4,1],surfaceLight:[2.2,.65,2.8],position:[2.7,1.12,-.15],tilt:[-.12,-.4,.12],scale:.56},
   {data:logos[3],color:[.18,.9,.94],position:[2.6,-1.22,1.3],tilt:[.13,-.37,-.16],scale:.53},
  ];
  const globeData=sphere(),particleData=brands.map((_,i)=>particles(112+i*89));
@@ -162,12 +177,12 @@ export async function createEnergyScene(canvas,initiallyPaused=false){
  function initialize(){
   mainProgram=program(vertexSource,fragmentSource);particleProgram=program(particleVertex,particleFragment);
   mainUniforms=uniforms(mainProgram,['uRotation','uPosition','uScale','uAspect','uKind','uColor','uEarth','uNight','uNormal','uLogoPositions[0]','uLogoColors[0]']);
-  particleUniforms=uniforms(particleProgram,['uPosition','uTime','uAspect','uRatio','uColor']);
+  particleUniforms=uniforms(particleProgram,['uPosition','uTime','uAspect','uRatio','uColor','uPlanet','uViewport']);
   mainAttributes=['aPosition','aNormal','aUV'].map(n=>gl.getAttribLocation(mainProgram,n));particleAttributes=['aPosition','aNormal'].map(n=>gl.getAttribLocation(particleProgram,n));
   globe=buffer(globeData,8);brandMeshes=brands.map(b=>buffer(b.data,8));clouds=particleData.map(d=>buffer(d,6));
   texture(earth,0);texture(night,1);texture(normal,2);gl.useProgram(mainProgram);
   gl.uniform1i(mainUniforms.uEarth,0);gl.uniform1i(mainUniforms.uNight,1);gl.uniform1i(mainUniforms.uNormal,2);
-  gl.uniform3fv(mainUniforms['uLogoColors[0]'],new Float32Array(brands.flatMap(brand=>brand.glow||brand.color)));
+  gl.uniform3fv(mainUniforms['uLogoColors[0]'],new Float32Array(brands.flatMap(brand=>brand.surfaceLight||brand.glow||brand.color)));
   gl.enable(gl.DEPTH_TEST);gl.clearColor(0,0,0,0);
  }
  initialize();
@@ -198,7 +213,7 @@ export async function createEnergyScene(canvas,initiallyPaused=false){
   gl.disable(gl.STENCIL_TEST);
   drawMesh(globe,earthPosition,earthScale,earthRotation,0);
   gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE);gl.depthMask(false);drawMesh(globe,earthPosition,earthScale*1.012,earthRotation,2);
-  gl.useProgram(particleProgram);gl.uniform1f(particleUniforms.uAspect,width/height);gl.uniform1f(particleUniforms.uTime,elapsed);gl.uniform1f(particleUniforms.uRatio,ratio);
+  gl.useProgram(particleProgram);gl.uniform1f(particleUniforms.uAspect,width/height);gl.uniform1f(particleUniforms.uTime,elapsed);gl.uniform1f(particleUniforms.uRatio,ratio);gl.uniform4f(particleUniforms.uPlanet,...earthPosition,earthScale);gl.uniform2f(particleUniforms.uViewport,width,height);
   brands.forEach((brand,i)=>{attributes(clouds[i],particleAttributes,6);gl.uniform3fv(particleUniforms.uPosition,logoPositions[i]);gl.uniform3fv(particleUniforms.uColor,brand.glow||brand.color);gl.drawArrays(gl.POINTS,0,clouds[i].count);});
   gl.disable(gl.STENCIL_TEST);gl.disable(gl.BLEND);gl.depthMask(true);gl.useProgram(mainProgram);
   brands.forEach((brand,i)=>{const t=brand.tilt,h=hover[i];drawMesh(brandMeshes[i],logoPositions[i],brand.scale*(compact?.8:1),rotation(t[0]+h.y*.10,t[1]+h.x*.14,t[2]-h.x*.06+h.y*.04),1,brand.color);});
