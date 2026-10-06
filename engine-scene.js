@@ -3,27 +3,33 @@ import { rotation, particleVertex, particleFragment } from './scene.js';
 const vertex = `
 attribute vec3 aPosition,aNormal,aColor;
 uniform mat3 uRotation; uniform float uAspect;
-varying vec3 vNormal,vPosition,vColor;
+varying vec3 vNormal,vPosition,vColor,vLocal;
 void main(){
- vPosition=uRotation*aPosition;vNormal=uRotation*aNormal;vColor=aColor;
+ vPosition=uRotation*aPosition;vNormal=uRotation*aNormal;vColor=aColor;vLocal=aPosition;
  float d=10.-vPosition.z;
  gl_Position=vec4(vPosition.x*4.5/uAspect,vPosition.y*4.5,(d*30.1-6.)/29.9,d);
 }`;
 const fragment = `
 precision highp float;
-varying vec3 vNormal,vPosition,vColor;
+varying vec3 vNormal,vPosition,vColor,vLocal;
 void main(){
  vec3 n=normalize(vNormal),v=normalize(vec3(0.,0.,10.)-vPosition);
- vec3 l=normalize(vec3(-.7,1.,1.5)),r=reflect(-v,n);
- float diffuse=max(dot(n,l),0.);
- float strip=exp(-pow((r.x+.4)*8.,2.))*.8;
- float spec=pow(max(dot(reflect(-l,n),v),0.),55.);
- float rim=pow(1.-max(dot(n,v),0.),3.);
- vec3 c=vColor*(.16+.65*diffuse)+vec3(.78,.87,1.)*(strip*.55+spec*.85);
- c+=vec3(.12,.21,.32)*rim*.3;
-
- gl_FragColor=vec4(pow(c,vec3(.9)),1.);
-}`;
+ vec3 l=normalize(vec3(-.8,1.3,1.7)),r=reflect(-v,n);
+ float diffuse=max(dot(n,l),0.),fresnel=pow(1.-max(dot(n,v),0.),5.);
+ float brush=.5+.5*sin(vLocal.z*680.+sin(atan(vLocal.y,vLocal.x)*80.)*.8);
+ float metal=smoothstep(.19,.42,max(vColor.r,max(vColor.g,vColor.b)));
+ float softbox=exp(-pow((r.x+.42)*3.8,2.)-pow((r.y-.46)*1.8,2.));
+ float strip=exp(-pow((r.x-.65)*12.,2.)-pow((r.y+.12)*1.7,2.));
+ float overhead=exp(-pow((r.y-.85)*5.,2.));
+ float spec=pow(max(dot(reflect(-l,n),v),0.),85.);
+ vec3 reflection=vec3(.93,.96,1.)*(softbox*1.05+strip*.65+overhead*.25+spec*.4);
+ vec3 c=vColor*(.10+diffuse*.55);
+ c+=reflection*mix(.12,.62,metal)*(.94+brush*.06);
+ c+=vec3(.11,.22,.34)*pow(max(dot(n,normalize(vec3(1.,.2,-1.))),0.),3.)*.45;
+ c+=vec3(.16,.19,.23)*fresnel;
+ gl_FragColor=vec4(pow(vec3(1.)-exp(-c*1.35),vec3(.83)),1.);
+}
+`;
 
 export function createEngineScene(canvas, initiallyPaused=false){
  const gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false,powerPreference:'low-power'});
@@ -42,44 +48,67 @@ export function createEngineScene(canvas, initiallyPaused=false){
    const dr=after[0]-before[0],dz=after[1]-before[1],length=Math.hypot(dr,dz)||1;
    data.push(p[0]*Math.cos(angle),p[0]*Math.sin(angle),p[1],-dz*Math.cos(angle)/length,-dz*Math.sin(angle)/length,dr/length,...color);
   }
-  for(let j=0;j<profile.length-1;j++)for(let i=0;i<128;i++){
-   const t=i*Math.PI/64,T=(i+1)*Math.PI/64;
+  for(let j=0;j<profile.length-1;j++)for(let i=0;i<192;i++){
+   const t=i*Math.PI/96,T=(i+1)*Math.PI/96;
    vertex(j,t);vertex(j,T);vertex(j+1,t);vertex(j,T);vertex(j+1,T);vertex(j+1,t);
   }
  }
- // Revolved housing: rounded intake lip, hollow inner duct and tapered exhaust.
- lathe(body,[[.9,1.25],[1.08,1.34],[1.18,1.27],[1.2,1.12],[1.12,.96],[1.01,-.6],[.74,-1.25],[.62,-1.52],[.51,-1.52],[.57,-1.17],[.83,-.5],[.9,1.25]],metal);
- for(const z of [-1.12,-.75,-.35,.1,.55,.95]){
-  const r=z<-.6?.8:1.06+(z+.35)*.06;
-  lathe(body,[[r,z],[r+.035,z+.025],[r+.035,z+.075],[r,z+.1]],bright);
+ // Rounded intake lip, shadowed inner duct and a tapered exhaust casing.
+ lathe(body,[[.90,1.05],[.91,1.20],[.95,1.30],[1.02,1.355],[1.10,1.36],[1.17,1.315],[1.205,1.24],[1.215,1.15],[1.195,1.065],[1.16,.99]],bright);
+ lathe(body,[[1.16,.99],[1.145,.85],[1.115,.45],[1.075,-.1],[1.03,-.55],[.99,-.69],[.92,-.86],[.81,-1.08],[.73,-1.24],[.67,-1.39],[.64,-1.48]],metal);
+ lathe(body,[[.64,-1.48],[.63,-1.53],[.58,-1.55],[.54,-1.51],[.55,-1.42],[.61,-1.19],[.80,-.72],[.86,-.42],[.89,.78],[.90,1.05]],dark);
+ for(const [r,z] of [[1.155,.85],[1.123,.45],[1.082,-.10],[1.035,-.55],[.915,-.91]]){
+  lathe(body,[[r,z-.033],[r+.018,z-.018],[r+.024,z],[r+.018,z+.018],[r,z+.033]],trim);
  }
- lathe(body,[[.92,1.21],[.94,1.24],[.97,1.23],[.96,1.19]],trim);
- lathe(body,[[.53,-1.54],[.61,-1.56],[.64,-1.52],[.59,-1.49]],trim);
- lathe(fan,[[0,1.44],[.10,1.40],[.23,1.24],[.29,1.02],[.27,.86],[0,.82]],bright);
- // Curved, twisted fan blades, built as real surfaces with a thin back face.
- for(let i=0;i<19;i++){
-  const theta=i*Math.PI*2/19;
-  for(let j=0;j<8;j++){
-   const point=(t,side,back=0)=>{
-    const radius=.26+t*.64,angle=theta+t*.31+side*(.085+t*.065);
-    return [radius*Math.cos(angle),radius*Math.sin(angle),1.04-t*.18+side*.075+back];
-   };
-   const t=j/8,T=(j+1)/8;
-   const emit=(t,side)=>{
-    const p=point(t,side),q=point(t+.001,side),r=point(t,side+.001);
-    const u=q.map((v,i)=>v-p[i]),v=r.map((x,i)=>x-p[i]);
-    const n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]],length=Math.hypot(...n)||1;
-    fan.push(...p,...n.map(x=>x/length),...metal);
-   };
-   emit(t,-1);emit(T,-1);emit(t,1);emit(T,-1);emit(T,1);emit(t,1);
+ lathe(body,[[.90,1.06],[.905,1.15],[.913,1.19]],trim);
+ lathe(body,[[.55,-1.53],[.57,-1.56],[.63,-1.56],[.66,-1.52],[.65,-1.47]],bright);
+ lathe(fan,[[0,1.44],[.055,1.435],[.105,1.40],[.175,1.32],[.24,1.19],[.28,1.04],[.285,.96],[.265,.89],[0,.87]],bright);
+ lathe(fan,[[.278,.98],[.29,.99],[.293,1.01],[.286,1.025]],trim);
+ // Airfoil blades have camber, thickness and closed tip/edge surfaces.
+ for(let i=0;i<22;i++){
+  const theta=i*Math.PI*2/22;
+  const point=(t,chord,back=false)=>{
+   const radius=.275+t*.607,angle=theta+t*.38+(chord-.5)*(.26-t*.07);
+   const camber=Math.sin(chord*Math.PI)*(.065+t*.035);
+   return [radius*Math.cos(angle),radius*Math.sin(angle),1.035-t*.20+(chord-.5)*.15+camber-(back?.014:0)];
+  };
+  function emit(t,chord,back){
+   const p=point(t,chord,back),a=point(t+.0001,chord,back),b=point(t,chord+.0001,back);
+   const u=a.map((x,j)=>x-p[j]),v=b.map((x,j)=>x-p[j]);
+   const n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]],length=Math.hypot(...n)||1;
+   fan.push(...p,...n.map(x=>x/length*(back?-1:1)),...(back?trim:metal));
+  }
+  for(let j=0;j<18;j++)for(let k=0;k<6;k++)for(const back of [false,true]){
+   const t=j/18,T=(j+1)/18,c=k/6,C=(k+1)/6;
+   for(const [u,v] of [[t,c],[T,c],[T,C],[t,c],[T,C],[t,C]])emit(u,v,back);
+  }
+  for(let j=0;j<18;j++)for(const c of [0,1]){
+   const a=point(j/18,c),b=point((j+1)/18,c),d=point(j/18,c,true),e=point((j+1)/18,c,true);
+   triangle(fan,a,b,e,bright);triangle(fan,a,e,d,bright);
+  }
+  for(let k=0;k<6;k++){
+   const a=point(1,k/6),b=point(1,(k+1)/6),c=point(1,(k+1)/6,true),d=point(1,k/6,true);
+   triangle(fan,a,b,c,trim);triangle(fan,a,c,d,trim);
   }
  }
- // Long external ribs and fasteners give the casing a mechanical silhouette.
+ // Shallow rounded casing rails and inset fastener heads.
  for(let i=0;i<16;i++){
-  const t=i*Math.PI/8;
-  const p=(r,z,a)=>[r*Math.cos(a),r*Math.sin(a),z];
-  const a=p(1.13,-.45,t),b=p(1.2,.85,t),c=p(1.14,.85,t+.035),d=p(1.07,-.45,t+.035);
-  triangle(body,a,b,c,dark);triangle(body,a,c,d,metal);
+  const angle=i*Math.PI/8;
+  for(let j=0;j<18;j++)for(let k=0;k<8;k++){
+   const p=(u,v)=>{const z=-.48+u*1.28,a=angle+(v-.5)*.033,r=1.035+(z+.55)*.09+Math.sin(v*Math.PI)*.028;return [r*Math.cos(a),r*Math.sin(a),z];};
+   const a=p(j/18,k/8),b=p((j+1)/18,k/8),c=p((j+1)/18,(k+1)/8),d=p(j/18,(k+1)/8);
+   triangle(body,a,b,c,trim);triangle(body,a,c,d,trim);
+  }
+  for(const z of [-.50,.79]){
+   const radius=1.035+(z+.55)*.09+.018;
+   const p=(r,t,h)=>[(radius+h)*Math.cos(angle)-r*Math.sin(t)*Math.sin(angle),(radius+h)*Math.sin(angle)+r*Math.sin(t)*Math.cos(angle),z+r*Math.cos(t)];
+   for(let k=0;k<12;k++){
+    const t=k*Math.PI/6,T=(k+1)*Math.PI/6;
+    triangle(body,p(0,0,.007),p(.022,t,.007),p(.022,T,.007),bright);
+    triangle(body,p(.022,t,.007),p(.027,t,0),p(.027,T,0),trim);
+    triangle(body,p(.022,t,.007),p(.027,T,0),p(.022,T,.007),trim);
+   }
+  }
  }
  let seed=37;const random=()=>((seed=(seed*1664525+1013904223)>>>0)/4294967296);
  for(let i=0;i<1100;i++){

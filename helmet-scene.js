@@ -3,28 +3,35 @@ import { rotation, particleVertex, particleFragment } from './scene.js';
 const vertex = `
 attribute vec3 aPosition,aNormal;
 uniform mat3 uView,uTurn;uniform vec3 uPosition,uSize;uniform float uAspect;
-varying vec3 vNormal,vPosition;
+varying vec3 vNormal,vPosition,vLocal;
 void main(){
- vPosition=uView*(uTurn*(aPosition*uSize)+uPosition);
+ vLocal=aPosition;vPosition=uView*(uTurn*(aPosition*uSize)+uPosition);
  vNormal=normalize(uView*uTurn*(aNormal/uSize));
  float d=9.-vPosition.z;
  gl_Position=vec4(vPosition.x*4./uAspect,vPosition.y*4.,(d*30.1-6.)/29.9,d);
 }`;
 const fragment = `
-precision highp float;varying vec3 vNormal,vPosition;uniform vec3 uColor;
+precision highp float;varying vec3 vNormal,vPosition,vLocal;uniform vec3 uColor;
+float hash(vec3 p){return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453);}
 void main(){
- vec3 n=normalize(vNormal),v=normalize(vec3(0.,0.,9.)-vPosition),l=normalize(vec3(-.6,1.,1.8));
- float diffuse=max(dot(n,l),0.);
- float spec=pow(max(dot(reflect(-l,n),v),0.),38.);
- float rim=pow(1.-max(dot(n,v),0.),3.);
- float grain=fract(sin(dot(vPosition,vec3(127.1,311.7,74.7)))*43758.5453);
- vec3 color=uColor*(.22+diffuse*.85)+vec3(1.,.94,.83)*spec*.7;
- color+=vec3(1.,.28,.06)*rim*.26;
- float strip=exp(-pow((reflect(-v,n).x+.4)*7.,2.));
- color+=vec3(1.,.87,.66)*strip*.16;
- color*=.985+grain*.015;
- gl_FragColor=vec4(pow(color,vec3(.85)),1.);
-}`;
+ vec3 n=normalize(vNormal),v=normalize(vec3(0.,0.,9.)-vPosition),l=normalize(vec3(-.8,1.2,1.8));
+ vec3 r=reflect(-v,n);
+ float diffuse=max(dot(n,l),0.),nv=max(dot(n,v),0.);
+ float fresnel=.045+.955*pow(1.-nv,5.);
+ float plastic=step(uColor.g*1.4,uColor.r);
+ float grain=hash(floor(vLocal*380.));
+ float softbox=exp(-pow((r.x+.40)*3.2,2.)-pow((r.y-.55)*2.3,2.));
+ float strip=exp(-pow((r.x-.7)*10.,2.)-pow((r.y+.1)*2.,2.));
+ float spec=pow(max(dot(reflect(-l,n),v),0.),80.);
+ float fill=max(dot(n,normalize(vec3(1.,.2,.4))),0.);
+ vec3 color=uColor*(.12+diffuse*.70+fill*.12)*(.98+grain*.02);
+ float reflection=softbox*1.2+strip*.55+spec*.65;
+ color+=vec3(1.,.96,.88)*reflection*mix(.55,.38+fresnel*.55,plastic);
+ color+=vec3(1.,.30,.07)*pow(max(dot(n,normalize(vec3(.4,.1,-1.))),0.),3.)*.16;
+ color+=vec3(.10,.13,.17)*fresnel*.25;
+ gl_FragColor=vec4(pow(vec3(1.)-exp(-color*1.5),vec3(.83)),1.);
+}
+`;
 
 export function createHelmetScene(canvas, initiallyPaused=false) {
  const gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false,powerPreference:'low-power'});
@@ -39,19 +46,29 @@ export function createHelmetScene(canvas, initiallyPaused=false) {
   for(let i=0;i<nu;i++)for(let j=0;j<nv;j++){const u=i/nu,v=j/nv,U=(i+1)/nu,V=(j+1)/nv;for(const [a,b] of [[u,v],[U,v],[U,V],[u,v],[U,V],[u,V]])vertex(a,b);}
   parts.push({data,color});
  }
- // Smooth injection-moulded shell and its thick inner lip.
- surface((u,v)=>{const t=u*Math.PI*2,p=.001+v*(Math.PI/2-.001);return [1.22*Math.sin(p)*Math.cos(t),-.56+1.53*Math.cos(p),1.35*Math.sin(p)*Math.sin(t)];},96,40,gold);
- const brim=(u,v)=>{const t=u*Math.PI*2,front=Math.pow(Math.max(0,Math.sin(t)),5),r=1+v*(.12+front*.28);return [1.22*r*Math.cos(t),-.56-v*.075,1.35*r*Math.sin(t)];};
- surface(brim,96,8,gold);
- surface((u,v)=>{const p=brim(u,1);return [p[0],p[1]-v*.065,p[2]];},96,3,edge);
- surface((u,v)=>{const p=brim(1-u,v);return [p[0],p[1]-.065,p[2]];},96,8,edge);
- // Three longitudinal raised ribs follow the dome contour.
- for(const x of [-.44,0,.44])surface((u,v)=>{const t=-1.37+u*2.74,a=v*Math.PI*2,h=Math.sqrt(1-x*x/(1.22*1.22));return [x+Math.cos(a)*.055,-.56+(1.53*h+.055+Math.sin(a)*.055)*Math.cos(t),(1.35*h+.055+Math.sin(a)*.055)*Math.sin(t)];},72,12,gold);
- function ellipsoid(center,size,color){surface((u,v)=>{const t=u*Math.PI*2,p=.001+v*(Math.PI-.002);return [center[0]+size[0]*Math.sin(p)*Math.cos(t),center[1]+size[1]*Math.cos(p),center[2]+size[2]*Math.sin(p)*Math.sin(t)];},24,12,color);}
+ // Ribs are moulded into the shell instead of resting on it as separate tubes.
+ const shell=(u,v)=>{
+  const t=u*Math.PI*2,p=.0001+v*(Math.PI/2-.0001);
+  const x=1.22*Math.sin(p)*Math.cos(t),y=-.56+1.53*Math.cos(p),z=1.35*Math.sin(p)*Math.sin(t);
+  const base=Math.min(1,Math.max(0,(y+.56)/.22));
+  const rib=(Math.exp(-Math.pow(x/.09,4.))*.07+Math.exp(-Math.pow((x-.44)/.085,4.))*.043+Math.exp(-Math.pow((x+.44)/.085,4.))*.043)*base*base*(3-2*base);
+  const nx=x/(1.22*1.22),ny=(y+.56)/(1.53*1.53),nz=z/(1.35*1.35),length=Math.hypot(nx,ny,nz);
+  return [x+rib*nx/length,y+rib*ny/length,z+rib*nz/length];
+ };
+ surface(shell,192,80,gold);
+ const brim=(u,v)=>{
+  const t=u*Math.PI*2,front=Math.pow(Math.max(0,Math.sin(t)),5),width=.12+front*.28,r=1+v*width;
+  return [1.22*r*Math.cos(t),-.56-v*.055-Math.sin(v*Math.PI)*.016,1.35*r*Math.sin(t)];
+ };
+ surface(brim,192,16,gold);
+ // A rolled edge closes the upper and lower visor without a hard seam.
+ surface((u,v)=>{const t=u*Math.PI*2,p=brim(u,1),a=v*Math.PI;return [p[0]+Math.sin(a)*.024*Math.cos(t),p[1]-.034+Math.cos(a)*.034,p[2]+Math.sin(a)*.024*Math.sin(t)];},192,16,gold);
+ surface((u,v)=>{const p=brim(1-u,v);return [p[0],p[1]-.068,p[2]];},192,16,edge);
+ function ellipsoid(center,size,color){surface((u,v)=>{const t=u*Math.PI*2,p=.001+v*(Math.PI-.002);return [center[0]+size[0]*Math.sin(p)*Math.cos(t),center[1]+size[1]*Math.cos(p),center[2]+size[2]*Math.sin(p)*Math.sin(t)];},48,24,color);}
  // Recessed ventilation slots on both sides, with moulded surrounds.
  for(const side of [-1,1])for(let i=0;i<4;i++){const z=(i-1.5)*.29,y=-.05,x=side*1.22*Math.sqrt(1-Math.pow((y+.56)/1.53,2)-Math.pow(z/1.35,2));ellipsoid([x,y,z],[.028,.085,.112],edge);ellipsoid([x+side*.012,y,z],[.023,.052,.078],dark);}
  // Inner suspension band and small metallic attachment points.
- surface((u,v)=>{const t=u*Math.PI*2;return [1.12*Math.cos(t),-.58-v*.18,1.24*Math.sin(t)];},96,3,dark);
+ surface((u,v)=>{const t=u*Math.PI*2;return [1.12*Math.cos(t),-.58-v*.18,1.24*Math.sin(t)];},128,6,dark);
  for(const side of [-1,1])for(const z of [-.65,.65])ellipsoid([side*1.07,-.48,z],[.055,.055,.055],metal);
  const cloud=[];
  for(let i=0;i<760;i++){const angle=random()*Math.PI*2,r=.5+Math.sqrt(random())*1.9;cloud.push(Math.cos(angle)*r,Math.sin(angle)*r*.82,-2-random()*.5,random()*3.8+2,random()*.4+.6,random()*6.28);}
