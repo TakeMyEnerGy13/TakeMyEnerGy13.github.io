@@ -1,4 +1,5 @@
 const translations = {
+  "Переход в дизайн-портфолио. Escape — отменить": "Entering the design portfolio. Press Escape to cancel",
   "Открыть портал My Design": "Open the My Design portal",
   "Дизайн-портфолио скоро появится здесь.": "My design portfolio is coming soon.",
   "Скоро": "Coming soon",

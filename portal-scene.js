@@ -2,17 +2,18 @@ import { rotation } from './scene.js';
 
 const vertex = `
 attribute vec3 aPosition; attribute vec3 aNormal;
-uniform mat3 uRotation; uniform float uAspect;
+uniform mat3 uRotation; uniform float uAspect; uniform float uTravel,uZoom; uniform vec2 uOffset;
 varying vec3 vNormal; varying vec3 vPosition; varying vec3 vLocal;
 void main(){
  vLocal=aPosition;vPosition=uRotation*(aPosition*vec3(.92,1.05,1.));vNormal=uRotation*(aNormal/vec3(.92,1.05,1.));
- float d=8.-vPosition.z;
+ float d=8.-uTravel*6.6-vPosition.z;
  float projection=min(3.,uAspect*2.6);
  gl_Position=vec4(vPosition.x*projection/uAspect,vPosition.y*projection,(d*30.1-6.)/29.9,d);
+ gl_Position.xy=gl_Position.xy*uZoom+uOffset*d;
 }`;
 const fragment = `
 precision highp float;
-uniform float uTime; uniform float uKind; uniform float uHover;
+uniform float uTime; uniform float uKind; uniform float uHover; uniform float uTravel,uRush;
 varying vec3 vNormal; varying vec3 vPosition; varying vec3 vLocal;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),f.x),f.y);}
@@ -21,7 +22,7 @@ vec3 portalLight(vec2 p){
  float radius=length(p),angle=atan(p.y,p.x);
  vec3 purple=vec3(.35,.065,1.),pink=vec3(.88,.15,.67),blue=vec3(.035,.54,1.);
  float flow=mist(p*3.+vec2(uTime*.055,-uTime*.045));
- float spiral=angle*3.+log(radius+.16)*10.-uTime*.48+flow*3.2;
+ float spiral=angle*3.+log(radius+.16)*10.-uTime*.48-uTravel*12.+flow*3.2;
  float ribbons=pow(.5+.5*sin(spiral),4.);
  float wisps=pow(.5+.5*sin(spiral*3.+flow*5.),20.);
  float nebula=mist(p*5.-vec2(uTime*.06));
@@ -32,7 +33,7 @@ vec3 portalLight(vec2 p){
  color=mix(color,blue,cyan);
  color*=(.13+nebula*.18+ribbons*(.35+uHover*.22)+wisps*.34)*inner;
  color+=mix(vec3(.58,.24,1.),vec3(.52,.8,1.),cyan)*pow(ribbons,3.)*(.18+uHover*.28)*inner;
- return color;
+ return color*(1.+uTravel*.5+uRush*.22);
 }
 void main(){
  float r=length(vLocal.xy),angle=atan(vLocal.y,vLocal.x);
@@ -49,7 +50,7 @@ void main(){
   vec3 closed=vec3(.014,.006,.027)+vec3(.042,.012,.072)*pow(radius,3.);
   gl_FragColor=vec4(mix(closed,color,aperture),1.);return;
  }
- vec3 n=normalize(vNormal),view=normalize(vec3(0.,0.,8.)-vPosition);
+ vec3 n=normalize(vNormal),view=normalize(vec3(0.,0.,8.-uTravel*6.6)-vPosition);
  vec2 stoneUV=vLocal.xy;
  float grain=noise(stoneUV*54.);
  float relief=noise(stoneUV*11.)*.7+grain*.3;
@@ -85,25 +86,33 @@ void main(){
 }`;
 const dustVertex = `
 attribute vec3 aPosition; attribute vec3 aNormal;
-uniform mat3 uRotation; uniform float uAspect; uniform float uTime; uniform float uRatio; uniform float uHover;
-varying float vAlpha;
+uniform mat3 uRotation; uniform float uAspect; uniform float uTime; uniform float uRatio; uniform float uHover; uniform float uTravel,uZoom,uRush; uniform vec2 uOffset;
+varying float vAlpha; varying vec2 vDirection; varying float vStretch;
 void main(){
  float activeOnly=1.-step(0.,aNormal.z);
  float activation=smoothstep(.05,.85,uHover);
- float angle=aPosition.x+uTime*abs(aNormal.z);
+ float angle=aPosition.x+uTime*abs(aNormal.z)+uTravel*1.3;
  float radius=aPosition.y+sin(uTime*.3+aNormal.y)*.025;
  radius+=activeOnly*sin(uTime*.55+aNormal.y)*.12;
- vec3 p=uRotation*vec3(cos(angle)*radius*.92,sin(angle)*radius*1.05,aPosition.z);
- float d=8.-p.z;
+ float spark=1.-step(12.,aNormal.x);
+ radius-=spark*uRush*.5;
+ vec3 p=uRotation*vec3(cos(angle)*radius*.92,sin(angle)*radius*1.05,aPosition.z+spark*uRush*.6);
+ float d=8.-uTravel*6.6-p.z;
  float projection=min(3.,uAspect*2.6);
  gl_Position=vec4(p.x*projection/uAspect,p.y*projection,(d*30.1-6.)/29.9,d);
- gl_PointSize=aNormal.x*uRatio*(1.+activeOnly*.2);
+ gl_Position.xy=gl_Position.xy*uZoom+uOffset*d;
+ vStretch=1.+spark*uRush*5.;
+ vDirection=normalize(vec2(p.x/uAspect,-p.y));
+ gl_PointSize=aNormal.x*uRatio*(1.+activeOnly*.2)*(1.+uTravel*1.4)*vStretch;
  vAlpha=(.35+.25*sin(uTime*.6+aNormal.y))*(aNormal.x>12.?.14:1.)*(.65+uHover*1.05);
  vAlpha*=mix(1.,activation*1.6,activeOnly);
 }`;
 const dustFragment = `
-precision mediump float;varying float vAlpha;
-void main(){float r=length(gl_PointCoord-.5)*2.;if(r>1.)discard;
+precision mediump float;varying float vAlpha; varying vec2 vDirection; varying float vStretch;
+void main(){
+ vec2 uv=(gl_PointCoord-.5)*2.;
+ vec2 streak=vec2(dot(uv,vDirection),dot(uv,vec2(-vDirection.y,vDirection.x))*vStretch);
+ float r=length(streak);if(r>1.)discard;
  float core=exp(-r*r*5.)*(1.-smoothstep(.65,1.,r));
  gl_FragColor=vec4(mix(vec3(.52,.18,1.),vec3(.9,.7,1.),core*.5),core*vAlpha);
 }`;
@@ -111,6 +120,7 @@ void main(){float r=length(gl_PointCoord-.5)*2.;if(r>1.)discard;
 export function createPortalScene(canvas, initiallyPaused=false){
  const gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false,powerPreference:'low-power'});
  if(!gl)throw new Error('WebGL unavailable');
+ const stage=canvas.parentElement;
  const ring=[],disk=[],dust=[];
  // Individual rounded stones, with normals derived from their actual beveled surface.
  const stoneCount=28,arcSteps=12,profileSteps=48;
@@ -167,7 +177,7 @@ export function createPortalScene(canvas, initiallyPaused=false){
   gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(p));return p;
  };
  const mesh=data=>{const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);return {buffer,count:data.length/6};};
- const locations=p=>Object.fromEntries(['uRotation','uAspect','uTime','uKind','uRatio','uHover'].map(name=>[name,gl.getUniformLocation(p,name)]));
+ const locations=p=>Object.fromEntries(['uRotation','uAspect','uTime','uKind','uRatio','uHover','uTravel','uRush','uZoom','uOffset'].map(name=>[name,gl.getUniformLocation(p,name)]));
  function initialize(){
   program=makeProgram(vertex,fragment);particleProgram=makeProgram(dustVertex,dustFragment);
   uniforms=locations(program);particleUniforms=locations(particleProgram);
@@ -182,17 +192,23 @@ export function createPortalScene(canvas, initiallyPaused=false){
    gl.enableVertexAttribArray(location);gl.vertexAttribPointer(location,3,gl.FLOAT,false,24,i*12);
   }
  }
- let paused=initiallyPaused,visible=false,lost=false,frame=0,last=0,time=0,ratio=1,hover=0,targetHover=0;
+ let paused=initiallyPaused,visible=false,lost=false,frame=0,last=0,time=0,ratio=1,hover=0,targetHover=0,travel=0,rush=0,flightFraming=null;
  function draw(){
   if(lost)return;
   gl.viewport(0,0,canvas.width,canvas.height);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
-  const turn=rotation(0,0,0),aspect=canvas.width/canvas.height;
+  const turn=rotation(0,0,-travel*.10-rush*.22),aspect=canvas.width/canvas.height;
+  const center=travel*travel*(3-2*travel);
+  const startZoom=flightFraming?flightFraming.height*Math.min(3.,flightFraming.width/flightFraming.height*2.6)/(canvas.clientHeight*Math.min(3.,aspect*2.6)):1;
+  const zoom=startZoom+(1-startZoom)*center;
+  const offset=flightFraming?[(flightFraming.x/canvas.clientWidth*2-1)*(1-center),(1-flightFraming.y/canvas.clientHeight*2)*(1-center)]:[0,0];
   gl.disable(gl.BLEND);gl.depthMask(true);gl.useProgram(program);
   gl.uniformMatrix3fv(uniforms.uRotation,false,turn);gl.uniform1f(uniforms.uAspect,aspect);gl.uniform1f(uniforms.uTime,time);gl.uniform1f(uniforms.uHover,hover);
+  gl.uniform1f(uniforms.uRush,rush);gl.uniform1f(uniforms.uTravel,travel);gl.uniform1f(uniforms.uZoom,zoom);gl.uniform2fv(uniforms.uOffset,offset);
   bind(diskMesh,program);gl.uniform1f(uniforms.uKind,1);gl.drawArrays(gl.TRIANGLES,0,diskMesh.count);
   bind(ringMesh,program);gl.uniform1f(uniforms.uKind,0);gl.drawArrays(gl.TRIANGLES,0,ringMesh.count);
   gl.useProgram(particleProgram);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE);gl.depthMask(false);
   gl.uniformMatrix3fv(particleUniforms.uRotation,false,turn);gl.uniform1f(particleUniforms.uAspect,aspect);gl.uniform1f(particleUniforms.uTime,time);gl.uniform1f(particleUniforms.uRatio,ratio);gl.uniform1f(particleUniforms.uHover,hover);
+  gl.uniform1f(particleUniforms.uRush,rush);gl.uniform1f(particleUniforms.uTravel,travel);gl.uniform1f(particleUniforms.uZoom,zoom);gl.uniform2fv(particleUniforms.uOffset,offset);
   bind(dustMesh,particleProgram);gl.drawArrays(gl.POINTS,0,dustMesh.count);gl.depthMask(true);
  }
  function tick(now){
@@ -202,11 +218,15 @@ export function createPortalScene(canvas, initiallyPaused=false){
  }
  function schedule(){if(!frame&&visible&&!paused&&!document.hidden&&!lost){last=0;frame=requestAnimationFrame(tick);}}
  function resize(){const box=canvas.getBoundingClientRect();ratio=Math.min(devicePixelRatio||1,1.5);canvas.width=Math.max(1,Math.round(box.width*ratio));canvas.height=Math.max(1,Math.round(box.height*ratio));draw();}
- initialize();resize();canvas.parentElement.classList.add('ready');
+ initialize();resize();stage.classList.add('ready');
  new ResizeObserver(resize).observe(canvas);
  new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;if(visible){draw();schedule();}else{cancelAnimationFrame(frame);frame=0;last=0;}},{rootMargin:'80px'}).observe(canvas);
  document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(frame);frame=0;last=0;}else schedule();});
- canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();lost=true;cancelAnimationFrame(frame);frame=0;canvas.parentElement.classList.remove('ready');});
- canvas.addEventListener('webglcontextrestored',()=>{try{initialize();lost=false;resize();canvas.parentElement.classList.add('ready');schedule();}catch{canvas.parentElement.classList.remove('ready');}});
- return {setOpen(value){targetHover=value?1:0;if(paused){hover=targetHover;draw();}schedule();},setPaused(value){paused=value;cancelAnimationFrame(frame);frame=0;last=0;hover=targetHover;draw();schedule();}};
+ canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();lost=true;cancelAnimationFrame(frame);frame=0;stage.classList.remove('ready');});
+ canvas.addEventListener('webglcontextrestored',()=>{try{initialize();lost=false;resize();stage.classList.add('ready');schedule();}catch{stage.classList.remove('ready');}});
+ return {
+  beginFlight(framing){flightFraming=framing;travel=0;rush=0;targetHover=1;resize();schedule();},
+  setFlight(value,impulse=0){travel=value;rush=impulse;hover=Math.max(hover,Math.min(1,value*9));draw();},
+  endFlight(){travel=0;rush=0;flightFraming=null;resize();schedule();},
+  setOpen(value){targetHover=value?1:0;if(paused){hover=targetHover;draw();}schedule();},setPaused(value){paused=value;cancelAnimationFrame(frame);frame=0;last=0;hover=targetHover;draw();schedule();}};
 }

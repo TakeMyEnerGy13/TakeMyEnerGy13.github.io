@@ -138,7 +138,7 @@ async function extrudeLogo(url){
 }
 function particles(seed){
  const values=[];let state=seed;const random=()=>{state=(state*1664525+1013904223)>>>0;return state/4294967296;};
- for(let i=0;i<460;i++){const angle=random()*Math.PI*2,radius=Math.pow(random(),.7)*1.18;
+ for(let i=0;i<301;i++){const angle=random()*Math.PI*2,radius=Math.pow(random(),.7)*1.18;
   values.push(Math.cos(angle)*radius,Math.sin(angle)*radius*.7,-.4-random()*.5,i<70?48+random()*72:1.8+random()*3.,i<70?.26:.55+random()*.45,random()*6.28);
  }return new Float32Array(values);
 }

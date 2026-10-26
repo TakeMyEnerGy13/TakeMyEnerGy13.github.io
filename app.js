@@ -35,7 +35,40 @@ const portalTrigger = portalStage.querySelector('.portal-trigger');
 const portalNotice = document.querySelector('#my-design .portal-notice');
 let portalPointerInside = false;
 let portalPinned = false;
+let portalTravelling = false;
+let portalFlightFrame = 0;
+let portalRecoveryTimer = 0;
+const portalFlight = document.querySelector('.portal-flight');
+const portalCanvas = document.querySelector('#portal-scene');
+const portalCanvasAnchor = portalCanvas.nextSibling;
+const smoothRange = (from, to, value) => {
+  const t = Math.max(0, Math.min(1, (value - from) / (to - from)));
+  return t * t * (3 - 2 * t);
+};
+function restorePortalFlight() {
+  if (!portalTravelling) return;
+  cancelAnimationFrame(portalFlightFrame);
+  clearTimeout(portalRecoveryTimer);
+  portalStage.insertBefore(portalCanvas, portalCanvasAnchor);
+  portalScene?.endFlight();
+  portalFlight.close();
+  portalFlight.removeAttribute('style');
+  portalFlight.classList.remove('has-webgl');
+  document.documentElement.classList.remove('portal-travelling');
+  portalTrigger.removeAttribute('aria-busy');
+  portalTravelling = false;
+  portalPinned = false;
+  portalPointerInside = false;
+  portalTrigger.focus({ preventScroll: true });
+  setPortalOpen(false);
+}
+portalFlight.addEventListener('cancel', event => { event.preventDefault(); restorePortalFlight(); });
+window.addEventListener('pageshow', restorePortalFlight);
+window.addEventListener('resize', restorePortalFlight);
+document.addEventListener('visibilitychange', () => { if (document.hidden) restorePortalFlight(); });
+reducedMotion.addEventListener('change', restorePortalFlight);
 function setPortalOpen(open) {
+  if (portalTravelling && !open) return;
   portalStage.classList.toggle('is-open', open);
   portalTrigger.setAttribute('aria-expanded', String(open));
   portalScene?.setOpen(open);
@@ -45,7 +78,7 @@ portalTrigger.addEventListener('pointerenter', event => {
   portalPointerInside = true;
   setPortalOpen(true);
 });
-portalStage.addEventListener('pointerleave', event => {
+portalTrigger.addEventListener('pointerleave', event => {
   if (event.pointerType === 'touch') return;
   portalPointerInside = false;
   if (!portalStage.contains(document.activeElement) && !portalPinned) setPortalOpen(false);
@@ -55,16 +88,57 @@ portalStage.addEventListener('focusout', () => queueMicrotask(() => {
   if (!portalStage.contains(document.activeElement)) { portalPinned = false; if (!portalPointerInside) setPortalOpen(false); }
 }));
 function enterDesignPortfolio() {
+  if (portalTravelling) return;
   portalPinned = true;
   setPortalOpen(true);
-  portalNotice.hidden = false;
+  portalNotice.hidden = true;
+  const rect = portalCanvas.getBoundingClientRect();
+  const framing = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, width: rect.width, height: rect.height };
+  portalTravelling = true;
+  portalTrigger.setAttribute('aria-busy', 'true');
+  document.documentElement.classList.add('portal-travelling');
+  portalFlight.classList.toggle('has-webgl', Boolean(portalScene && portalStage.classList.contains('ready')));
+  portalFlight.style.setProperty('--flight-x', framing.x + 'px');
+  portalFlight.style.setProperty('--flight-y', framing.y + 'px');
+  portalFlight.showModal();
+  portalFlight.insertBefore(portalCanvas, portalFlight.querySelector('.portal-flight-veil'));
+  portalScene?.beginFlight(framing);
+  portalFlight.focus({ preventScroll: true });
+  const started = performance.now(), duration = paused ? 320 : 1850;
+  function advance(now) {
+    if (!portalTravelling) return;
+    const progress = Math.min(1, (now - started) / duration);
+    // A gentle initial pull gives way to an accelerating, short plunge.
+    const plunge = Math.max(0, Math.min(1, (progress - .50) / .40));
+    const approach = .14 * smoothRange(0, .56, progress) + .86 * plunge * plunge * plunge;
+    const rush = paused ? 0 : smoothRange(.50, .84, progress) * (1 - smoothRange(.94, 1, progress));
+    portalScene?.setFlight(paused ? 0 : approach, rush);
+    portalFlight.style.setProperty('--flight-backdrop', smoothRange(0, .4, progress));
+    portalFlight.style.setProperty('--flight-veil', paused ? progress : smoothRange(.89, 1, progress));
+    portalFlight.style.setProperty('--flight-scale', paused ? 1 : 1 + approach * 10);
+    portalFlight.style.setProperty('--flight-blur', (rush * 1.3) + 'px');
+    if (progress < 1) {
+      portalFlightFrame = requestAnimationFrame(advance);
+      return;
+    }
+    const destination = portalTrigger.dataset.destination?.trim();
+    if (destination) {
+      window.location.assign(destination);
+      // Recover the controls if navigation is cancelled or fails to leave this document.
+      portalRecoveryTimer = window.setTimeout(restorePortalFlight, 1800);
+    } else {
+      restorePortalFlight();
+      portalNotice.hidden = false;
+    }
+  }
+  portalFlightFrame = requestAnimationFrame(advance);
 }
 portalTrigger.addEventListener('click', enterDesignPortfolio);
 portalStage.addEventListener('keydown', event => {
   if (event.key === 'Escape') { portalPinned = false; setPortalOpen(false); portalTrigger.focus({ preventScroll: true }); setPortalOpen(false); }
 });
 document.addEventListener('pointerdown', event => {
-  if (!portalStage.contains(event.target)) { portalPinned = false; portalPointerInside = false; setPortalOpen(false); }
+  if (!portalTravelling && !portalStage.contains(event.target)) { portalPinned = false; portalPointerInside = false; setPortalOpen(false); }
 });
 
 // Company artwork replaces the pointer only when a mouse and the image are available.
