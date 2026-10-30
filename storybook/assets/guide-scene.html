@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TakeMyEnerGy — Чёртик</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="./environment.css">
+  <link rel="stylesheet" href="./paper-ui.css">
+  <link rel="stylesheet" href="./engineer-portal.css">
+  <style>.about{min-height:100svh;display:grid;place-items:center}.about-design{width:min(80vw,540px)}.guide-stage{max-width:480px}</style>
+</head>
+<body>
+  <main class="about">
+    <div class="about-design">
+      <div class="guide-stage">
+        <div class="environment environment-guide is-moving" aria-hidden="true"><div class="scenery guide-flower"><span class="botanical botanical-flower"><img src="./flower-blink.webp" width="800" height="600" alt=""></span></div></div>
+        <div class="guide-orbit" aria-hidden="true"></div>
+        <div class="guide"><img src="./imp-smile.webp" width="1087" height="1447" alt="Улыбающийся чёртик в белых перчатках стоит в круге и отбрасывает бумажную тень"></div>
+      </div>
+      <h1 class="about-caption">Дизайн с характером.</h1>
+    </div>
+  </main>
+  <script>
+    const guide = document.querySelector('.guide');
+    const stage = document.querySelector('.guide-stage');
+    stage.addEventListener('pointermove', event => {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches || !matchMedia('(pointer: fine)').matches) return;
+      const bounds = stage.getBoundingClientRect();
+      const x = (event.clientX - bounds.left) / bounds.width - .5;
+      guide.style.setProperty('--guide-rotation', `${x * 9}deg`);
+      guide.style.setProperty('--guide-y', `${Math.abs(x) * -8}px`);
+    });
+    stage.addEventListener('pointerleave', () => { guide.style.cssText = ''; });
+  </script>
+</body>
+</html>

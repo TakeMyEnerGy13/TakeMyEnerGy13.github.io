@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#19151d">
+  <meta name="description" content="Артём / TakeMyEnerGy. Дизайн, код и AI. Небольшое путешествие по работам разработчика и дизайнера.">
+  <title>TakeMyEnerGy — По ту сторону обычного</title>
+  <script>
+    if (!location.hash || location.hash === '#prologue') {
+      document.documentElement.classList.add('intro-pending');
+      setTimeout(() => {
+        if (!document.documentElement.classList.contains('intro-active')) document.documentElement.classList.remove('intro-pending');
+      }, 8000);
+    }
+  </script>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="./assets/yeseva-one.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="./assets/theatre-clean.webp" as="image" fetchpriority="high">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./assets/theatre.css">
+  <link rel="stylesheet" href="./assets/environment.css">
+  <link rel="stylesheet" href="./assets/paper-ui.css">
+  <link rel="stylesheet" href="./assets/engineer-portal.css">
+  <link rel="stylesheet" href="./assets/engineer-rear.css">
+  <link rel="stylesheet" href="./assets/work-hands.css">
+  <link rel="stylesheet" href="./assets/casino-scene.css">
+  <link rel="stylesheet" href="./assets/forest-contact.css">
+  <link rel="stylesheet" href="./assets/intro.css">
+  <script src="./app.js" defer></script>
+  <script src="./assets/curtain.js" defer></script>
+  <script src="./assets/intro.js" defer></script>
+  <script src="./assets/theatre.js" defer></script>
+  <script src="./assets/atmosphere.js" defer></script>
+  <script src="./assets/engineer-rear.js" defer></script>
+  <script src="./assets/work-hands.js" type="module"></script>
+  <script src="./assets/casino-scene.js" defer></script>
+  <script src="./assets/forest-puppet.js" type="module"></script>
+</head>
+<body>
+  <dialog class="intro" aria-label="Добро пожаловать в TakeMyEnerGy" tabindex="-1">
+    <div class="intro-drapes" aria-hidden="true">
+      <div class="intro-curtain intro-curtain-left"><img src="./assets/curtain-panel.webp" width="720" height="1080" alt="" fetchpriority="high"></div>
+      <div class="intro-curtain intro-curtain-right"><img src="./assets/curtain-panel.webp" width="720" height="1080" alt="" fetchpriority="high"></div>
+    </div>
+    <canvas class="intro-fabric" aria-hidden="true"></canvas>
+    <div class="intro-blackout" aria-hidden="true"></div>
+    <p class="intro-signature" aria-hidden="true">.TakeMyEnerGy</p>
+    <button class="intro-enter" type="button" aria-label="Открыть занавес и войти на сайт"></button>
+    <button class="intro-skip" type="button">Пропустить</button>
+  </dialog>
+  <a class="skip-link" href="#work">Перейти к работам</a>
+  <header class="masthead">
+    <a class="wordmark" href="#prologue" aria-label="TakeMyEnerGy — в начало">take<span>my</span>energy<span class="brand-star" aria-hidden="true">✳</span></a>
+    <nav class="main-nav" aria-label="Основная навигация">
+      <a href="#work">Работы</a>
+      <a href="#about">Обо мне</a>
+      <a href="#contact">На связи</a>
+    </nav>
+    <a class="header-contact" href="#contact"><svg class="header-contact-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 5 18-.5.5 14-18 .5Z"/><path d="m3.5 5.5 8.5 7 8.5-7M3.5 18l6-7m11 7-6-7"/></svg>Контакты</a>
+  </header>
+
+  <main>
+    <section class="prologue chapter" id="prologue" aria-labelledby="hero-title" data-chapter="Пролог" data-number="01">
+      <div class="forest-stage stage-world">
+        <img class="stage-backdrop" src="./assets/theatre-clean.webp" width="1672" height="941" alt="" fetchpriority="high">
+        <canvas class="stage-atmosphere" width="1000" height="563" aria-hidden="true"></canvas>
+        <div class="stage-mist mist-distant" aria-hidden="true"><img src="./assets/stage-mist.webp" width="1536" height="1024" alt=""></div>
+        <div class="stage-cast" id="stage-cast">
+          <button class="dancer dancer-left" type="button" aria-label="Подбросить левого чертёнка"><span class="dancer-floor-shadow" aria-hidden="true"><span class="shadow-projection"><span class="shadow-sprite"></span></span></span><span class="dancer-body"><span class="dancer-sprite"></span></span></button>
+          <button class="dancer dancer-center" type="button" aria-label="Подбросить главного чертёнка"><span class="dancer-floor-shadow" aria-hidden="true"><span class="shadow-projection"><span class="shadow-sprite"></span></span></span><span class="dancer-body"><span class="dancer-sprite"></span></span></button>
+          <button class="dancer dancer-right" type="button" aria-label="Подбросить правого чертёнка"><span class="dancer-floor-shadow" aria-hidden="true"><span class="shadow-projection"><span class="shadow-sprite"></span></span></span><span class="dancer-body"><span class="dancer-sprite"></span></span></button>
+        </div>
+        <div class="stage-mist mist-foreground" aria-hidden="true"><img src="./assets/stage-mist.webp" width="1536" height="1024" alt=""></div>
+        <div class="stage-proscenium" aria-hidden="true"></div>
+      </div>
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="environment environment-hero" aria-hidden="true">
+        <img class="scenery scenery-tree hero-tree-left" src="./assets/hero-infernal-tree.webp" width="650" height="1435" alt="" decoding="async">
+        <img class="scenery scenery-tree hero-tree-right" src="./assets/hero-infernal-tree.webp" width="650" height="1435" alt="" decoding="async">
+      </div>
+      <div class="hero-copy">
+        <h1 id="hero-title" tabindex="-1">По ту сторону обычного.</h1>
+        <p class="hero-description">Создаю сайты, AI-агентов и цифровые миры.<br class="desktop-break"> С характером. И вниманием к тому,<br class="desktop-break"> что скрывается за первым впечатлением.</p>
+      </div>
+      <a class="ticket hero-ticket" href="#work"><span>Начать путешествие</span><span class="ticket-arrow" aria-hidden="true">↓</span></a>
+    </section>
+
+    <section class="work chapter" id="work" aria-labelledby="work-title" data-chapter="Избранные работы" data-number="02">
+      <div class="environment environment-work" aria-hidden="true">
+        <div class="scenery work-mushroom"><span class="botanical botanical-mushroom"><img src="./assets/mushroom-blink.webp" width="800" height="600" loading="lazy" decoding="async" alt=""></span></div>
+      </div>
+      <svg class="ribbon ribbon-work" viewBox="0 0 1200 150" preserveAspectRatio="none" aria-hidden="true"><path d="M740 -20 C740 80 1150 -10 1130 65 S400 40 210 110 S80 130 70 165"/></svg>
+      <div class="section-heading content-width">
+        <div><h2 id="work-title">У каждой идеи<br>свой сюжет.</h2></div>
+      </div>
+      <div class="work-escape" role="group" tabindex="-1" aria-label="Спасите героиню" aria-describedby="work-rescue-help" data-rescue="playing">
+        <p class="sr-only" id="work-rescue-help">Нажмите на каждую руку три раза, чтобы прогнать её. С клавиатуры: Tab для выбора руки, Enter или пробел для попадания.</p>
+        <div class="work-girl-shadow" aria-hidden="true"></div>
+        <div class="work-hands"></div>
+        <div class="work-girl" data-pose="left" aria-hidden="true"><span class="work-girl-cel"></span></div>
+        <div class="work-thanks" hidden aria-hidden="true"><span>You are my hero!</span></div>
+        <p class="work-rescue-status sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+        <button class="work-replay" type="button" aria-label="Сыграть снова" hidden><span aria-hidden="true">↻</span></button>
+      </div>
+      <div class="work-projects content-width">
+        <article class="work-project work-project-hrum">
+          <div class="work-project-sheet">
+          <button class="work-project-open" data-open-project="hrum" type="button" aria-label="Подробнее о ХРУМ" aria-haspopup="dialog" aria-controls="project-dialog"></button>
+          <h3>ХРУМ</h3>
+          <div class="work-project-preview">
+            <img src="./assets/site-hrum.webp" width="1440" height="1000" loading="lazy" decoding="async" alt="Сайт ХРУМ: Заведи привычку и оригинальный оранжевый персонаж">
+          </div>
+          <p>Трекер привычек с характером. Живой персонаж, интерактивный лендинг и заявки через Telegram.</p>
+          <div class="work-project-footer"><a class="work-project-link" href="https://hrum-landing.taile9bb5d.ts.net/" target="_blank" rel="noopener noreferrer" aria-label="Открыть сайт ХРУМ"><span class="work-project-link-face">Открыть сайт <span class="work-project-link-arrow" aria-hidden="true">↗</span></span></a></div>
+          </div>
+        </article>
+        <article class="work-project work-project-travel">
+          <div class="work-project-sheet">
+          <button class="work-project-open" data-open-project="travel" type="button" aria-label="Подробнее о Проотдых" aria-haspopup="dialog" aria-controls="project-dialog"></button>
+          <h3>Проотдых</h3>
+          <div class="work-project-preview">
+            <img src="./assets/site-prootdyh.webp" width="1440" height="1000" loading="lazy" decoding="async" alt="Первый экран сайта Проотдых с предложением подобрать тур">
+          </div>
+          <p>Путешествие начинается с первого экрана. Сайт турагентства с акцентом на подборе тура.</p>
+          <div class="work-project-footer"><a class="work-project-link" href="https://takemyenergy13.github.io/prootdyh-redesign/glavnaya.html" target="_blank" rel="noopener noreferrer" aria-label="Открыть сайт Проотдых"><span class="work-project-link-face">Открыть сайт <span class="work-project-link-arrow" aria-hidden="true">↗</span></span></a></div>
+          </div>
+        </article>
+        <article class="work-project work-project-learny">
+          <div class="work-project-sheet">
+          <button class="work-project-open" data-open-project="learny" type="button" aria-label="Подробнее о Learny" aria-haspopup="dialog" aria-controls="project-dialog"></button>
+          <h3>Learny</h3>
+          <div class="work-project-preview">
+            <img src="./assets/site-learny.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Сайт Learny: Изучайте язык, говоря на нём">
+          </div>
+          <p>Языковая практика с AI-собеседником. Разговоры голосом, упражнения и память о прошлых занятиях.</p>
+          <div class="work-project-footer"><a class="work-project-link" href="https://mdza6hp6kqzf.run.agentplace.io/" target="_blank" rel="noopener noreferrer" aria-label="Открыть сайт Learny"><span class="work-project-link-face">Открыть сайт <span class="work-project-link-arrow" aria-hidden="true">↗</span></span></a></div>
+          </div>
+        </article>
+        <article class="work-project work-project-whiterock">
+          <div class="work-project-sheet">
+          <button class="work-project-open" data-open-project="whiterock" type="button" aria-label="Подробнее о WhiteRock" aria-haspopup="dialog" aria-controls="project-dialog"></button>
+          <h3>WhiteRock</h3>
+          <div class="work-project-preview">
+            <img src="./assets/site-whiterock.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Сайт WhiteRock: предложение для стоматологических клиник">
+          </div>
+          <p>Лендинг для привлечения пациентов в стоматологии. Предложение, кейсы и путь от интереса до заявки.</p>
+          <div class="work-project-footer"><a class="work-project-link" href="https://clinic.whiterock.marketing/" target="_blank" rel="noopener noreferrer" aria-label="Открыть сайт WhiteRock"><span class="work-project-link-face">Открыть сайт <span class="work-project-link-arrow" aria-hidden="true">↗</span></span></a></div>
+          </div>
+        </article>
+      </div>
+      <div class="work-outro content-width">
+        <a class="work-archive" href="https://github.com/TakeMyEnerGy13" target="_blank" rel="noopener noreferrer">
+          <span class="work-archive-face">
+            <span class="work-archive-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M12 .75a11.25 11.25 0 0 0-3.56 21.92c.56.1.77-.24.77-.54v-2.1c-3.13.68-3.79-1.33-3.79-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.72 1.16 1.72 1.16 1 1.72 2.63 1.22 3.27.93.1-.73.39-1.22.71-1.5-2.5-.28-5.13-1.25-5.13-5.57 0-1.23.44-2.23 1.16-3.02-.12-.29-.5-1.43.11-2.98 0 0 .95-.3 3.1 1.15a10.8 10.8 0 0 1 5.63 0c2.15-1.46 3.09-1.15 3.09-1.15.61 1.55.23 2.69.11 2.98.72.79 1.16 1.79 1.16 3.02 0 4.33-2.64 5.29-5.15 5.57.4.35.76 1.03.76 2.08v3.1c0 .3.2.65.77.54A11.25 11.25 0 0 0 12 .75Z"/></svg></span>
+            <span class="work-archive-label">Больше работ на <span>GitHub</span></span>
+            <span class="work-archive-stub" aria-hidden="true"><span>↗</span></span>
+          </span>
+        </a>
+      </div>
+    </section>
+
+    <div class="casino-interlude" id="casino">
+      <div class="casino-scene" role="img" aria-label="Дьявольское казино: смеющийся Дьявол за рулеткой, живой огонь, синяя дымка и падающие монеты, купюры и золото.">
+        <img class="casino-still" src="./assets/casino-master-claws.webp" width="1672" height="941" loading="lazy" decoding="async" alt="">
+        <canvas class="casino-canvas" width="1672" height="941" aria-hidden="true"></canvas>
+      </div>
+    </div>
+
+    <section class="about about--engineer chapter" id="about" aria-labelledby="about-title" data-chapter="AI Engineer" data-number="03">
+      <span class="rear-night" aria-hidden="true"></span>
+      <span class="rear-matrix rear-matrix-back" aria-hidden="true"></span>
+      <div class="engineer-rear-wrap content-width" id="engineer-studio">
+        <a class="engineer-portal engineer-rear-portal" href="../index.html" aria-label="Открыть AI Engineer портфолио — за рабочим столом">
+          <span class="engineer-rear-scene environment" aria-hidden="true">
+            <svg class="rear-desk-shadow" viewBox="0 0 1024 1024" focusable="false">
+              <defs><filter id="desk-shadow-soft" x="-50%" y="-100%" width="200%" height="300%"><feGaussianBlur stdDeviation="13"/></filter><filter id="desk-shadow-contact" x="-50%" y="-100%" width="200%" height="300%"><feGaussianBlur stdDeviation="3"/></filter></defs>
+              <g fill="#241b17" filter="url(#desk-shadow-soft)"><ellipse cx="515" cy="951" rx="440" ry="48" opacity=".12"/><path d="M137 876L169 876 117 979 68 988Z M850 876L878 876 963 984 912 978Z" opacity=".17"/></g>
+              <g fill="#211712" filter="url(#desk-shadow-contact)" opacity=".27"><ellipse cx="31" cy="1005" rx="25" ry="5"/><ellipse cx="988" cy="1005" rx="25" ry="5"/><ellipse cx="158" cy="883" rx="20" ry="4"/><ellipse cx="865" cy="883" rx="20" ry="4"/></g>
+            </svg>
+            <svg class="rear-seat-shadow" viewBox="0 0 1024 1024" focusable="false">
+              <defs><filter id="seat-shadow-soft" x="-50%" y="-100%" width="200%" height="300%"><feGaussianBlur stdDeviation="15"/></filter><filter id="seat-shadow-contact" x="-50%" y="-100%" width="200%" height="300%"><feGaussianBlur stdDeviation="3"/></filter></defs>
+              <g fill="#211712" filter="url(#seat-shadow-soft)"><ellipse cx="513" cy="1001" rx="295" ry="29" opacity=".22"/><path d="M320 976Q512 915 707 976L756 1008Q511 1039 268 1008Z" opacity=".12"/></g>
+              <g fill="#211712" filter="url(#seat-shadow-contact)" opacity=".32"><ellipse cx="305" cy="1000" rx="36" ry="6"/><ellipse cx="709" cy="1000" rx="36" ry="6"/><ellipse cx="512" cy="1020" rx="34" ry="5"/></g>
+            </svg>
+            <span class="rear-halo"></span>
+            <span class="rear-beams"></span>
+            <span class="rear-computer">
+              <img src="./assets/engineer-rear-desk.webp" width="1024" height="1024" loading="lazy" decoding="async" alt="">
+              <svg class="rear-mouse-wire" viewBox="0 0 1024 1024"><path d="M844 535 C872 500 874 473 833 464 S770 451 758 400"/></svg>
+              <img class="rear-monitor-occlusion" src="./assets/engineer-rear-desk.webp" width="1024" height="1024" loading="lazy" decoding="async" alt="">
+              <span class="rear-screen"><i></i><i></i><i></i><i></i><b></b><span class="rear-screen-matrix"></span></span>
+              <span class="rear-mouse"><img src="./assets/engineer-working-mouse.webp" width="240" height="260" loading="lazy" decoding="async" alt=""></span>
+            </span>
+            <span class="rear-monitor-spill"></span>
+            <span class="rear-particles">
+              <i class="rear-flight" data-flight="paper-left"><span class="rear-flight-tail"></span><span class="rear-flight-art rear-flight-paper"><b></b></span></i>
+              <i class="rear-flight" data-flight="code-right"><span class="rear-flight-tail"></span><span class="rear-flight-art rear-flight-code">{ }</span></i>
+              <i class="rear-flight" data-flight="spark-left"><span class="rear-flight-tail"></span><svg class="rear-flight-art rear-flight-spark" viewBox="0 0 48 48" focusable="false"><path d="M23 3 29 17 43 10 35 24 46 30 31 32 27 46 20 34 5 41 13 27 2 19 18 19Z"/></svg></i>
+              <i class="rear-flight" data-flight="paper-right"><span class="rear-flight-tail"></span><span class="rear-flight-art rear-flight-paper"><b></b></span></i>
+              <i class="rear-flight" data-flight="code-left"><span class="rear-flight-tail"></span><span class="rear-flight-art rear-flight-code">&lt;/&gt;</span></i>
+              <i class="rear-flight" data-flight="spark-right"><span class="rear-flight-tail"></span><svg class="rear-flight-art rear-flight-spark" viewBox="0 0 48 48" focusable="false"><path d="M23 3 29 17 43 10 35 24 46 30 31 32 27 46 20 34 5 41 13 27 2 19 18 19Z"/></svg></i>
+            </span>
+            <span class="rear-person"><img src="./assets/engineer-mouse-person.webp" width="1024" height="1024" loading="lazy" decoding="async" alt=""><canvas class="rear-character" width="1024" height="1024"></canvas></span>
+            <span class="rear-typing-mark rear-typing-mark-left"></span>
+            <span class="rear-typing-mark rear-typing-mark-right"></span>
+            <span class="rear-matrix rear-matrix-front"></span>
+            <span class="rear-hover-target"></span>
+          </span>
+          <h2 class="about-caption engineer-caption" id="about-title">AI Engineer<span class="engineer-arrow" aria-hidden="true">↗</span></h2>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+    <footer class="contact chapter" id="contact" aria-label="Связь" data-chapter="Связь" data-number="04">
+      <div class="contact-word" aria-hidden="true">СВЯЗЬ</div>
+      <div class="puppet-installation" data-forest-puppet role="img" aria-label="Большая рука Дьявола держит девушку на красных нитях. Девушка покачивается, моргает и иногда роняет слезу.">
+        <svg class="forest-puppet-static" viewBox="800 -190 1000 1110" aria-hidden="true">
+          <defs><clipPath id="puppet-girl-cut"><path d="M850 330H1600V941H850Z"/></clipPath></defs>
+          <g fill="none" stroke="#cf302f">
+            <path stroke-width="11" d="M1084 216C1084 260 1115 302 1115 335"/>
+            <path stroke-width="17" d="M1084 216C1084 260 1156 302 1156 335"/>
+            <path stroke-width="15" d="M1374 211C1374 260 1379 302 1379 335"/>
+            <path stroke-width="8" d="M1374 211C1374 260 1401 302 1401 335"/>
+            <path stroke-width="11" d="M1374 211C1374 260 1421 302 1421 335"/>
+          </g>
+          <image href="./assets/suspended-girl.webp" x="985" y="91.111111" width="500" height="750" clip-path="url(#puppet-girl-cut)"/>
+          <image href="./assets/devil-puppeteer-hand.webp" x="760" y="-175" width="1000" height="500"/>
+        </svg>
+      </div>
+      <nav class="contact-socials" aria-label="Социальные сети и почта">
+        <a class="contact-card contact-card-telegram" href="https://t.me/TakeMyEnerGy13" target="_blank" rel="noopener noreferrer"><span class="contact-card-face"><span class="contact-card-label">Telegram</span><span class="contact-card-arrow" aria-hidden="true">↗</span></span></a>
+        <a class="contact-card contact-card-x" href="https://x.com/TakeMyEnerGy561" target="_blank" rel="noopener noreferrer"><span class="contact-card-face"><span class="contact-card-label">X</span><span class="contact-card-arrow" aria-hidden="true">↗</span></span></a>
+        <div class="contact-right">
+          <a class="contact-card contact-card-github" href="https://github.com/TakeMyEnerGy13" target="_blank" rel="noopener noreferrer"><span class="contact-card-face"><span class="contact-card-label">GitHub</span><span class="contact-card-arrow" aria-hidden="true">↗</span></span></a>
+          <a class="contact-email" href="mailto:takemyenergy1337@gmail.com">takemyenergy1337@gmail.com</a>
+        </div>
+      </nav>
+    </footer>
+
+  <button class="motion-toggle" type="button" aria-pressed="false"><span class="motion-symbol" aria-hidden="true">Ⅱ</span><span class="motion-label">Остановить движение</span></button>
+  <button class="music-toggle" type="button" aria-label="Включить музыку" aria-pressed="false">
+    <span class="music-character" aria-hidden="true"><img class="violin-body" src="./assets/violin-player.webp" width="1024" height="1536" alt=""><img class="violin-bow" src="./assets/violin-bow.webp" width="1536" height="1024" alt=""><span class="music-note note-one">♪</span><span class="music-note note-two">♫</span></span>
+    <span class="music-label"><span class="music-state" aria-hidden="true">▷</span> Музыка</span>
+  </button>
+  <p class="music-status sr-only" role="status"></p>
+
+  <dialog id="project-dialog" class="project-dialog" aria-labelledby="case-title"><button class="dialog-close" type="button" aria-label="Закрыть проект">×</button><div class="case-art"><div class="case-screenshot"><img id="case-image" src="./assets/site-hrum.webp" alt="" width="1440" height="1000"></div></div><div class="case-content"><h2 id="case-title">ХРУМ</h2><p id="case-intro"></p><h3>Что внутри</h3><ul id="case-features"></ul><p class="case-stack" id="case-stack"></p><div class="case-links" id="case-links"></div></div></dialog>
+  <noscript><style>.project-tabs,.stage-open,[data-open-project],.motion-toggle,.music-toggle{display:none}.project-summary::after{content:'Код всех проектов доступен по ссылке GitHub ниже.'}</style></noscript>
+</body>
+</html>

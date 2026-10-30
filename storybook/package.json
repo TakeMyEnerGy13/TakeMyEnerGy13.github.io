@@ -1,0 +1,15 @@
+{
+  "name": "takemyenergy-storybook",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node server.mjs",
+    "check": "node --check app.js && node --check assets/curtain.js && node --check assets/intro.js && node --check assets/theatre.js && node --check assets/atmosphere.js && node --check assets/engineer-rear.js && node --check assets/work-hands.js && node --check assets/work-escape-motion.js && node --check assets/casino-scene.js && node --check assets/casino-roulette-motion.js && node --check assets/casino-treasure-3d.js && node --check assets/forest-world.js && node --check assets/forest-master-preview.js && node --check assets/forest-master-motion.js && node --check assets/forest-puppet.js && node --check assets/forest-puppet-motion.js && node --check server.mjs",
+    "test:casino": "node --test tests/casino-treasure-3d.test.mjs tests/casino-roulette.test.mjs",
+    "test:puppet": "node --test tests/forest-puppet.test.mjs",
+    "test:engineer": "node --test tests/engineer-rear.test.mjs",
+    "test:work": "node --test tests/work-escape.test.mjs tests/work-rescue.test.mjs"
+  }
+}

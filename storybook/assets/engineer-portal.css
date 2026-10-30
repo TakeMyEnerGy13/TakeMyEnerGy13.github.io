@@ -1,0 +1,54 @@
+.about-design,.engineer-portal{min-width:0;text-align:center}
+.about-caption{display:block;font:400 clamp(25px,2.8vw,40px)/1.2 var(--display);letter-spacing:-.035em;margin-top:28px}
+.engineer-portal{display:block;border-radius:12px;outline-offset:12px}
+.engineer-caption{display:flex;align-items:center;justify-content:center;gap:18px}
+.engineer-arrow{display:inline-grid;place-items:center;width:40px;height:40px;border:1.5px solid #473334;border-radius:50%;font:400 27px/1 var(--body);background:var(--paper-fiber),#efdfbd;box-shadow:2px 3px 0 #49313724}
+.engineer-portal:is(:hover,:focus-visible) .engineer-arrow{background:var(--paper-fiber),#a84940;color:#f2e4c9}
+.engineer-scene.environment{display:block;position:relative;inset:auto;width:100%;max-width:480px;aspect-ratio:1;margin-inline:auto;overflow:visible;isolation:isolate;--typing-speed:1.4s}
+.engineer-shadow{position:absolute;left:18%;right:5%;bottom:5%;height:8%;border-radius:50%;background:#493137;opacity:.13;filter:blur(7px);transform:rotate(-4deg)}
+.engineer-art{display:block;position:absolute;inset:2%;overflow:hidden;filter:drop-shadow(7px 9px 0 #432d3612)}
+.engineer-base{width:200%;max-width:none;height:100%;user-select:none}
+/* Only swap the forearms and keys; the furniture stays on the first cel. */
+.engineer-hands{position:absolute;inset:0;background:url('./engineer-typing.webp') right center/200% 100% no-repeat;clip-path:polygon(48% 34%,61% 33%,69% 38%,80% 40%,81% 48%,60% 51%,50% 55%,45% 48%);opacity:0}
+.engineer-screen{position:absolute;left:61.7%;top:14.9%;width:20.3%;height:16.3%;border-radius:11% 8%;transform:rotate(4deg) skewY(1deg);overflow:hidden;padding:3% 2%;opacity:.6;background:radial-gradient(ellipse,#b5e6ab28,transparent 75%);box-shadow:0 0 13px #b5e6ab22}
+.engineer-screen i{display:block;width:70%;height:3%;min-height:1px;margin-bottom:9%;background:#c5e8bb;box-shadow:0 0 3px #dcf1c899;transform-origin:left;transform:scaleX(.25)}
+.engineer-screen i:nth-child(2){width:88%;opacity:.55}.engineer-screen i:nth-child(3){width:52%}.engineer-screen i:nth-child(4){width:76%;opacity:.7}
+.engineer-screen b{display:block;width:5%;height:12%;background:#d1e7b5}
+.engineer-tap{position:absolute;width:5%;height:6%;opacity:0;background:linear-gradient(72deg,transparent 43%,#422a2d 44% 53%,transparent 54%) 0 0/45% 65% no-repeat,linear-gradient(105deg,transparent 43%,#422a2d 44% 53%,transparent 54%) 95% 0/45% 60% no-repeat}
+.engineer-tap-left{left:48%;top:30%;rotate:-20deg}.engineer-tap-right{left:67%;top:32%;rotate:15deg}
+.engineer-confetti{position:absolute;inset:0;z-index:2}
+.engineer-confetti>i{display:block;position:absolute;left:62%;top:39%;font-style:normal;opacity:0}
+.engineer-paper{width:23px;height:29px;border:1.5px solid #493137;background:repeating-linear-gradient(0deg,transparent 0 4px,#83675455 4px 5px) center/60% 54% no-repeat,#f3e2bf;box-shadow:2px 3px 0 #49313720}
+.engineer-paper::after{content:"";position:absolute;right:-1px;top:-1px;width:7px;height:7px;clip-path:polygon(0 0,100% 100%,0 100%);background:#b48e67}
+.engineer-glyph{font:700 19px/1 Georgia,serif;color:#853e3b;text-shadow:1px 1px #f3e2bf}
+.engineer-spark{width:22px;height:22px;background:#a84d3d;clip-path:polygon(48% 0,60% 34%,94% 18%,73% 49%,100% 62%,64% 68%,62% 100%,46% 75%,16% 94%,30% 61%,0 46%,33% 40%)}
+@media(prefers-reduced-motion:no-preference){
+ .engineer-scene.is-moving .engineer-hands{animation:engineer-type var(--typing-speed) step-end infinite}
+ .engineer-scene.is-moving .engineer-screen i{animation:engineer-code 3.2s steps(6,end) infinite;animation-delay:calc(var(--line,0)*-.55s)}
+ .engineer-screen i:nth-child(2){--line:1}.engineer-screen i:nth-child(3){--line:2}.engineer-screen i:nth-child(4){--line:3}
+ .engineer-scene.is-moving .engineer-screen b{animation:engineer-cursor 1.2s step-end infinite}
+ .engineer-scene.is-moving .engineer-confetti>i{animation:engineer-idle-flight 10s linear infinite;animation-delay:var(--delay)}
+ .engineer-portal:is(:hover,:focus-visible) .engineer-scene{--typing-speed:.48s}
+ .engineer-portal:is(:hover,:focus-visible) .engineer-scene.is-moving .engineer-confetti>i{animation-name:engineer-flight;animation-duration:2.4s;animation-delay:calc(var(--delay)*.38)}
+ .engineer-portal:is(:hover,:focus-visible) .engineer-scene.is-moving .engineer-screen{animation:engineer-glow 1.6s ease-in-out infinite alternate;opacity:.95}
+ .engineer-portal:is(:hover,:focus-visible) .engineer-scene.is-moving .engineer-screen i{animation-duration:1.1s}
+ .engineer-portal:is(:hover,:focus-visible) .engineer-scene.is-moving .engineer-tap{animation:engineer-tap .48s step-end infinite}
+ .engineer-portal:is(:hover,:focus-visible) .engineer-tap-right{animation-delay:.24s!important}
+ .engineer-portal:is(:hover,:focus-visible) .engineer-arrow{animation:engineer-arrow .6s steps(4,end) both}
+ .motion-paused .engineer-portal *{animation:none!important}
+}
+@keyframes engineer-type{0%,24%,52%,77%,100%{opacity:0}12%,37%,65%,89%{opacity:1}}
+@keyframes engineer-code{0%,6%{transform:scaleX(.2)}65%,93%{transform:scaleX(1)}100%{transform:scaleX(.2)}}
+@keyframes engineer-cursor{0%,55%,100%{opacity:1}56%,99%{opacity:0}}
+@keyframes engineer-tap{0%,49%,100%{opacity:0;transform:translateY(2px)}50%,99%{opacity:.75;transform:translateY(-1px)}}
+@keyframes engineer-glow{from{box-shadow:0 0 12px #b5e6ab22}to{box-shadow:0 0 23px #b5e6ab66}}
+@keyframes engineer-arrow{0%{transform:rotate(0)}35%{transform:translate(-2px,2px) rotate(-12deg)}70%{transform:translate(2px,-3px) rotate(6deg)}100%{transform:translate(1px,-2px)}}
+@keyframes engineer-idle-flight{0%,74%{opacity:0;transform:translate(0,0) scale(.5) rotate(0)}76%{opacity:.85}85%{opacity:.85;transform:translate(calc(var(--dx)*.75),var(--dy)) scale(.9) rotate(var(--turn))}96%,100%{opacity:0;transform:translate(var(--dx),calc(var(--dy)*.5 + 50px)) scale(.7) rotate(calc(var(--turn)*2))}}
+@keyframes engineer-flight{0%{opacity:0;transform:translate(0,0) scale(.4) rotate(0)}8%{opacity:1}45%{opacity:1;transform:translate(calc(var(--dx)*.6),var(--dy)) scale(1) rotate(var(--turn))}85%,100%{opacity:0;transform:translate(var(--dx),calc(var(--dy)*.5 + 65px)) scale(.8) rotate(calc(var(--turn)*2))}}
+@media(max-width:760px){
+ .about-caption{font-size:28px;margin-top:20px}
+ .engineer-scene.environment{max-width:340px}
+ .engineer-arrow{width:34px;height:34px;font-size:23px}
+ .engineer-confetti{scale:.78;transform-origin:62% 39%}
+ .engineer-paper{width:19px;height:24px}
+}

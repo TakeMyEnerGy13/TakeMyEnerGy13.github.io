@@ -1,0 +1,46 @@
+:root{scrollbar-gutter:stable}
+html.intro-pending, .intro-pending body{overflow:hidden}
+html.intro-pending:not(.intro-active)::after{content:"";position:fixed;inset:0;z-index:200;background:#08070a}
+dialog.intro{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;overflow:hidden;background:transparent;box-shadow:none;color:var(--moon)}
+.intro::backdrop{background:transparent;backdrop-filter:none}
+.intro:focus{outline:none}
+.intro::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E")}
+.intro-drapes{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.intro-fabric{position:absolute;inset:0;z-index:1;width:100%;height:100%;pointer-events:none;opacity:0}
+.intro.has-live-fabric .intro-fabric{opacity:1}
+.intro.has-live-fabric .intro-drapes{visibility:hidden}
+.intro-curtain{position:absolute;top:-2%;bottom:-3%;width:50.5%;overflow:hidden;background:#38101b;will-change:transform;transition:transform 2.2s cubic-bezier(.65,0,.18,1);box-shadow:0 0 56px #000}
+.intro-curtain-left{left:0;transform-origin:0 0}
+.intro-curtain-right{right:0;transform-origin:100% 0;transition-delay:.08s}
+.intro-curtain>img{position:absolute;left:-12%;top:-8%;width:124%;max-width:none;height:116%;object-fit:fill}
+.intro-curtain-right>img{transform:scaleX(-1)}
+.intro-curtain::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#08030880,transparent 35%,#08030875),linear-gradient(90deg,#08030885,transparent 30%,#16060d35 70%,#080308b0);box-shadow:inset 0 0 100px #0e040b70}
+.intro-curtain-right::after{transform:scaleX(-1)}
+.intro-blackout{position:absolute;inset:0;z-index:2;background:#08070a;pointer-events:none}
+.intro-signature{position:absolute;inset:0;z-index:3;display:grid;place-items:center;font:400 clamp(36px,7.8vw,112px)/1 var(--display);letter-spacing:-.065em;text-align:center;pointer-events:none;opacity:0;color:#ecddc1;text-shadow:0 0 48px #f2e4c915}
+.intro-enter{position:absolute;inset:0;z-index:4;width:100%;height:100%;padding:0;touch-action:manipulation;cursor:grab}
+.intro-enter:active{cursor:grabbing}
+.intro-enter:focus-visible{outline:1px solid #e0c28c70;outline-offset:-16px}
+.intro-skip{position:absolute;right:32px;bottom:24px;z-index:6;min-height:44px;padding:12px 16px;font-size:13px;color:var(--paper);opacity:.65;transition:opacity .2s}
+.intro-skip:hover,.intro-skip:focus-visible{opacity:1}
+.intro.is-presenting .intro-signature{animation:intro-signature 3.2s ease both}
+.intro.is-presenting .intro-blackout{animation:intro-darkness 3.2s ease both}
+.intro.is-opening .intro-curtain-left{transform:translateX(-102%) skewY(5deg) scaleX(.88)}
+.intro.is-opening .intro-curtain-right{transform:translateX(102%) skewY(-5deg) scaleX(.88)}
+.intro.is-opening .intro-signature,.intro.is-opening .intro-blackout{animation:none;opacity:0;transition:opacity .25s}
+.intro.has-live-fabric.is-opening .intro-curtain{transition:none;transform:none}
+.intro.is-opening .intro-enter{cursor:default}
+.intro.is-opening .intro-skip{opacity:.35}
+.intro.is-opening::after{opacity:0;transition:opacity 1.6s}
+.intro-opening .stage-world{animation:stage-arrival 2.3s cubic-bezier(.2,.7,.3,1) both;transform-origin:66% 55%}
+.intro-opening .hero-copy,.intro-opening .hero-ticket,.intro-opening .masthead{animation:stage-copy-arrival 1.3s .55s ease both}
+.intro-pending:not(.intro-opening) .music-toggle,.intro-pending:not(.intro-opening) .motion-toggle{visibility:hidden}
+@keyframes intro-signature{0%{opacity:0;filter:blur(8px);transform:scale(.96)}22%,58%{opacity:1;filter:blur(0);transform:scale(1)}100%{opacity:0;filter:blur(4px);transform:scale(1.035)}}
+@keyframes intro-darkness{0%,58%{opacity:1}100%{opacity:0}}
+@keyframes stage-arrival{from{transform:scale(1.055);filter:brightness(.5)}to{transform:scale(1);filter:brightness(1)}}
+@keyframes stage-copy-arrival{from{opacity:0}to{opacity:1}}
+.motion-paused .intro *{animation:none!important;transition:none!important}
+.motion-paused .intro-blackout{opacity:.6}
+.motion-paused .intro-signature{opacity:1;inset:0 0 24%}
+@media(max-width:760px){.intro-signature{font-size:clamp(32px,9vw,64px)}.intro-curtain{width:51%}.intro-skip{right:16px;bottom:16px}}
+@media(prefers-reduced-motion:reduce){.intro *{animation:none!important;transition:none!important}.intro-blackout{opacity:.6}.intro-signature{opacity:1;inset:0 0 24%}.intro-opening .stage-world,.intro-opening .hero-copy,.intro-opening .hero-ticket,.intro-opening .masthead{animation:none!important}}

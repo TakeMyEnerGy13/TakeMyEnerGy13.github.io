@@ -1,0 +1,26 @@
+.composition{position:relative;isolation:isolate;aspect-ratio:1672/941;overflow:hidden;background:#51435e}
+.composition .sky,.composition .plate,.composition .living-plate{position:absolute;inset:0;width:100%;height:100%;display:block}
+.composition .sky{z-index:0}
+.composition .plate{z-index:1;pointer-events:none}
+.composition .living-plate{z-index:2;pointer-events:none;visibility:hidden}
+.composition .forest-puppet-static,.composition .forest-puppet-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:3;pointer-events:none}
+.composition .forest-puppet-canvas{visibility:hidden}
+.composition.puppet-ready .forest-puppet-canvas{visibility:visible}
+.composition.puppet-ready .forest-puppet-static{visibility:hidden}
+.composition.is-rendered .living-plate{visibility:visible}
+.composition.is-rendered .plate{visibility:hidden}
+.composition .cloud{transform-box:fill-box;transform-origin:center;animation:forest-cloud-drift 28s ease-in-out infinite alternate}
+.composition .cloud-far{animation-duration:43s;animation-direction:alternate-reverse}
+.composition .star{animation:forest-star-twinkle var(--period) ease-in-out var(--delay) infinite alternate}
+.composition .forest-weather{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;visibility:hidden}
+.composition.is-rendered .forest-weather{visibility:visible}
+.composition .forest-mist{position:absolute;width:68%;height:67%;object-fit:contain;max-width:none;opacity:.16;mix-blend-mode:screen;will-change:transform;mask-image:radial-gradient(ellipse,#000 20%,transparent 68%)}
+.composition .forest-mist-near{left:-12%;bottom:-15%;transform:translate(calc(var(--mist-drift,0) * 1%),calc(var(--mist-rise,0) * 1%))}
+.composition .forest-mist-far{right:-15%;bottom:-8%;opacity:.12;transform:translate(calc(var(--mist-drift,0) * -.7%),calc(var(--mist-rise,0) * -.5%)) scaleX(-1)}
+.composition .forest-air{position:absolute;inset:0;width:100%;height:100%}
+.composition .forest-leaf{fill:#a46a41;stroke:#3b2932;stroke-width:1.3;stroke-linejoin:round}
+.composition .forest-mote{fill:#e9c990}
+.composition.still *{animation-play-state:paused!important}
+@keyframes forest-cloud-drift{from{transform:translateX(-54px)}to{transform:translateX(64px)}}
+@keyframes forest-star-twinkle{from{opacity:.2}to{opacity:.7}}
+@media(prefers-reduced-motion:reduce){.composition *{animation:none!important}}

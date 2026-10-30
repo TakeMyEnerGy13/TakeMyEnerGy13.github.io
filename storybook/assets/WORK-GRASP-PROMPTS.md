@@ -1,0 +1,44 @@
+# Project glove animation — 2026-10-25
+
+## Current revision: moving arms, fixed glove poses
+
+The user clarified that the arms should still move, while each glove keeps its painted finger pose. The runtime now smoothly extends and retracts complete gloves on flexible forearms, with slight wrist drift and no cel changes, finger deformation or frame tugging. Exactly two arms appear on the left and three on the right (two on narrow screens). Motion pauses offscreen, behind dialogs or entry, in hidden documents, under reduced motion and with the site's pause control.
+
+The user selected dorsal candidates 1 and 2 from `output/hand-variants/`. They are integrated as `work-hand-back-1.webp` (1312 × 1199, 233,218 bytes) and `work-hand-back-2.webp` (1536 × 1024, 310,828 bytes), preserving alpha. The approved original palm remains at upper left and middle right. Dorsal 1 appears at upper right; dorsal 2 at lower left and lower right. Each sprite has its own cuff pivot, scale and fixed orientation. Whole-arm motion is unchanged. Source PNGs remain in `output/hand-variants/`; prompts and provenance are in `output/hand-variants/PROMPTS.md`. Candidates 3 and 4 remain unused.
+
+Cuff fit: per-pose SVG masks reveal the forearm through each painted cuff opening and occlude the far lip where the arm enters. The near cream rim remains in front. Forearm paths extend 26 scene units beyond the shared wrist pivot, so the connection stays filled during all reach and rotation phases. The masks follow the same glove transform; original raster artwork is unchanged.
+
+## Earlier revision: static poses
+
+The user approved the first painted palm and requested 3–4 static reaching poses instead of animation. The runtime now uses the first three existing painted cels, placed at six fixed locations (four on narrow screens). The approved open palm is retained. All finger animation, SVG dorsal gloves, reach loops, observers, hover response and frame tugging were removed.
+
+Three new static variants were attempted with built-in imagegen, but all were rejected by the image service. No new generated artwork or API fallback was used. The existing transparent atlas and source PNG remain unchanged.
+
+The animation details below document the earlier iteration, not the current runtime.
+
+
+The user requested splayed grasping fingers, animated curling and both palm-facing and back-facing gloves.
+
+## Delivered artwork
+
+- [work-grasp-palm.webp](work-grasp-palm.webp): 1254 × 1254, transparent WebP, four palm-side cels.
+- [work-grasp-palm-source.png](work-grasp-palm-source.png): original built-in imagegen output, copied unchanged.
+- [work-hands.js](work-hands.js): procedural dorsal glove, with three stitched marks, rounded fingers and continuous independent finger curls. SVG outlines, cotton gradient and grain match the palette of the painted glove. No generated dorsal bitmap is used.
+
+Built-in imagegen created the palm sheet. Source: `exec-fe082902-41aa-4780-b098-480136d4cfe4.png`. Delivery conversion preserves alpha; no background removal. The four cels are cropped separately and registered at the cuff opening, because the generated sheet does not align perfectly to a uniform grid. Original source is retained in the workspace.
+
+The attempted back-facing image was rejected by the image service. The final back-facing glove is native SVG geometry, not a generated or retouched image. No CLI/API fallback or new dependency was used.
+
+## Motion
+
+Six staggered arms on desktop; four on narrower screens. Reach → curl → short tug → retreat → release. Palm fingers close through four drawn poses; dorsal fingers curl individually along continuous Bézier paths. Arm endpoint tangents align with the wrist and avoid the old forearm loops. Three hands use each viewpoint, alternating on opposite sides. The artwork is decorative and never intercepts clicks. The existing pause, reduced-motion, entry, dialog, visibility and offscreen behavior is preserved.
+
+## Final palm prompt
+
+Create a production animation sprite sheet of an expressive ivory-white cartoon glove, in a textured 1930s rubber-hose cel-animation style: thick slightly irregular plum-black ink contours, aged cream cotton, fine gouache/paper grain, a little warm shadow, entirely matte. One square 1536 x 1536 transparent canvas divided into an EXACT 2 x 2 invisible grid, four equal 768 x 768 cells. Exactly ONE complete glove in each cell, four gloves total. NO arms, bodies, scenery, text, guides, panel borders, ground shadows or other objects. Real transparent alpha. Four digits total per glove: THREE long rounded fingers plus ONE opposing thumb. No fingernails. Each glove points diagonally RIGHT and slightly upward, wrist opening at LEFT. In EVERY cell keep the same cuff center at local x130 y450, cuff width100 height125, and the same palm location x340 y370. Each glove stays entirely inside its cell with at least55px padding. Preserve identical viewpoint, wrist pivot, scale, lighting, cuff and palm across the four cells; ONLY finger joints curl. This is a GRASPING gesture, fingers spread far apart and hooked as if catching a ball, never a flat greeting, never an open presenting palm, never a pointing hand. The three separate fingers fan up/right into the empty space and the thumb opposes them below. Frame order: TOP LEFT fingers widely SPLAYED with clearly visible gaps and bent knuckles, ready to grab; TOP RIGHT fingertips flex inward one third; BOTTOM LEFT fingertips flex inward two thirds; BOTTOM RIGHT nearly closed GRASP around a small invisible ball, curved fingers overlap and thumb closes against them, small gap remains, NOT a boxing fist. Use clear and visibly different finger silhouettes in all four frames. The open frame reaches local x700, the gripping frame reaches x550. The wrist and palm must NOT travel or rotate between cells. VIEWPOINT: palm side three-quarter view. The inside palm faces the viewer, with a curved palm crease and thumb pad, no decorative parallel back-of-hand seam marks. Create a broad readable palm and foreshortened rounded fingers reaching toward the right and slightly toward the viewer. Distinct C-shaped grasping silhouette.
+
+## Attempted dorsal prompt (not delivered)
+
+Create a production animation sprite sheet of an expressive ivory-white cartoon glove, in a textured 1930s rubber-hose cel-animation style: thick slightly irregular plum-black ink contours, aged cream cotton, fine gouache/paper grain, a little warm shadow, entirely matte. One square 1536 x 1536 transparent canvas divided into an EXACT 2 x 2 invisible grid, four equal 768 x 768 cells. Exactly ONE complete glove in each cell, four gloves total. NO arms, bodies, scenery, text, guides, panel borders, ground shadows or other objects. Real transparent alpha. Four digits total per glove: THREE long rounded fingers plus ONE opposing thumb. No fingernails. Each glove points diagonally RIGHT and slightly upward, wrist opening at LEFT. In EVERY cell keep the same cuff center at local x130 y450, cuff width100 height125, and the same palm location x340 y370. Each glove stays entirely inside its cell with at least55px padding. Preserve identical viewpoint, wrist pivot, scale, lighting, cuff and palm across the four cells; ONLY finger joints curl. This is a GRASPING gesture, fingers spread far apart and hooked as if catching a ball, never a flat greeting, never an open presenting palm, never a pointing hand. The three separate fingers fan up/right into the empty space and the thumb opposes them below. Frame order: TOP LEFT fingers widely SPLAYED with clearly visible gaps and bent knuckles, ready to grab; TOP RIGHT fingertips flex inward one third; BOTTOM LEFT fingertips flex inward two thirds; BOTTOM RIGHT nearly closed GRASP around a small invisible ball, curved fingers overlap and thumb closes against them, small gap remains, NOT a boxing fist. Use clear and visibly different finger silhouettes in all four frames. The open frame reaches local x700, the gripping frame reaches x550. The wrist and palm must NOT travel or rotate between cells. VIEWPOINT: BACK OF THE HAND, slight three-quarter view. Knuckles and the back of the glove face the viewer; include THREE short curved classic stitched seam marks across the back. The palm creases must NOT be visible. Fingers arch away from the back toward the right, each knuckle and curved fingertip clearly readable. Keep all four frames in this back-of-hand viewpoint.
+Use the attached sprite sheet ONLY as style, glove identity and animation-layout reference. Redraw the glove from the opposite viewing side: the BACK with three dark stitched lines, not the palm, must face us in ALL four frames. Keep the same cuff position, four phases, cream material and black outlines. Please distinguish the back of the hand clearly from the reference palm.
+

@@ -1,0 +1,47 @@
+.casino-interlude {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 16px 0 88px;
+  background: var(--ink);
+  scroll-margin-top: 64px;
+}
+
+.casino-scene {
+  position: relative;
+  width: min(94%, 1540px, 170svh);
+  aspect-ratio: 1672 / 941;
+  margin-inline: auto;
+  overflow: hidden;
+  contain: layout paint;
+  background: #0f0d15;
+  mask-image: linear-gradient(transparent, #000 5%, #000 87%, transparent);
+}
+
+.casino-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--ink), transparent 9%, transparent 91%, var(--ink));
+}
+
+.casino-still,
+.casino-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.casino-canvas { opacity: 0; }
+.casino-scene.is-ready .casino-canvas { opacity: 1; }
+.casino-scene.is-ready .casino-still { visibility: hidden; }
+
+@media (max-width: 760px) {
+  .casino-interlude { padding: 8px 0 48px; }
+  .casino-scene { width: 100%; }
+}

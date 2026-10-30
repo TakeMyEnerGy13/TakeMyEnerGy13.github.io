@@ -1,0 +1,108 @@
+.contact{--forest-height:clamp(760px,58vw,1040px);padding-top:0;background:#17151f}
+.contact-inner,.contact .site-footer{position:relative;z-index:2}
+.contact-layout{display:flex;align-items:center;min-height:var(--forest-height);padding-bottom:100px}
+.contact-copy{width:35%;max-width:440px;padding:48px 0;text-shadow:0 2px 20px #17151f}
+.contact h2{font-size:clamp(44px,4.15vw,72px)}
+.contact-bottom{margin-top:0}
+.forest-world{--tree-lean:0deg;--girl-angle:0deg;--girl-drift:0%;--grass-bend:0deg;--plant-bend:0deg;--fog-drift:0px;--leaf-opacity:0;position:absolute;top:0;left:50%;translate:-50% 0;width:clamp(1180px,100%,1920px);height:var(--forest-height);overflow:hidden;pointer-events:none;user-select:none;isolation:isolate;mask-image:linear-gradient(90deg,transparent,#000 5%,#000 96%,transparent)}
+.forest-world::after{content:"";position:absolute;inset:0;z-index:12;background:linear-gradient(180deg,#17151f 0%,transparent 12%,transparent 90%,#17151f 100%),radial-gradient(ellipse at 10% 38%,#17151fe8 0%,#17151f99 25%,transparent 49%);pointer-events:none}
+.forest-sky{position:absolute;inset:0;background:linear-gradient(#25233650,#31283a45),url('./forest-sky.webp') center top/cover,#312a48}
+.forest-stars{position:absolute;inset:3% 3% 32%}
+.forest-star{position:absolute;left:var(--star-x);top:var(--star-y);width:var(--star-size);height:var(--star-size);background:#e2d4b9;opacity:var(--star-opacity);border-radius:50%}
+.forest-star-spark{border-radius:0;clip-path:polygon(50% 0,62% 37%,100% 50%,62% 63%,50% 100%,38% 63%,0 50%,38% 37%)}
+.forest-world.is-awake .forest-star-spark{animation:forest-twinkle var(--star-period) ease-in-out infinite alternate;animation-delay:var(--star-delay)}
+.forest-moon{position:absolute;left:39%;top:8%;width:84px;fill:#edd3a0;opacity:var(--moonlight,.94);rotate:-18deg;filter:drop-shadow(0 0 18px #e6c19130)}
+.forest-moon-halo{position:absolute;left:calc(39% - 58px);top:calc(8% - 58px);width:200px;height:200px;background:radial-gradient(ellipse,#e2c69a24,transparent 65%);opacity:var(--moonlight,.94)}
+.forest-clouds{position:absolute;inset:0;overflow:hidden}
+.forest-clouds>img{position:absolute;max-width:none;width:73%;height:29%;object-fit:fill;top:0;left:15%;opacity:.22;filter:saturate(.6) brightness(1.2);transform:translateX(var(--cloud-x,0px))}
+.forest-clouds>img+img{top:18%;left:42%;width:67%;height:19%;opacity:.13;scale:-1 1;transform:translateX(calc(var(--cloud-x,0px)*-.6))}
+.forest-distance{position:absolute;inset:0;opacity:.26;filter:brightness(.38) saturate(.6);mask-image:linear-gradient(#000 60%,transparent 100%)}
+.forest-distance img{position:absolute;bottom:19%;width:25%;height:auto}
+.forest-distance img:first-child{left:-9%;rotate:-12deg}
+.forest-distance img:last-child{left:47%;width:17%;scale:-1 1;opacity:.55}
+.forest-cemetery{position:absolute;left:0;bottom:28%;width:100%;height:49%;object-fit:fill;z-index:1;opacity:.86;filter:brightness(.85) saturate(1.1);transform:translateX(calc(var(--depth-x,0px)*.15))}
+.forest-chapel{position:absolute;left:37%;bottom:35%;width:19%;aspect-ratio:3/4;z-index:2;transform:translateX(calc(var(--depth-x,0px)*.3));filter:brightness(.88) saturate(1.1)}
+.forest-chapel>img{position:relative;width:100%;height:100%;z-index:1}
+.chapel-windows{position:absolute;inset:0;width:100%;height:100%;z-index:2;overflow:visible}
+.chapel-window{opacity:var(--candle-left,.84);filter:drop-shadow(0 0 6px #edab6855)}
+.chapel-window-right{opacity:var(--candle-right,.78)}
+.chapel-window-rose{opacity:calc(var(--candle-left,.84)*.68)}
+.chapel-spill{position:absolute;left:12%;right:12%;bottom:-3%;height:11%;background:radial-gradient(ellipse,#eab57455,transparent 70%);opacity:var(--candle-left,.84);z-index:0}
+.forest-ground{position:absolute;width:100%;height:48%;bottom:0;object-fit:fill;z-index:3;filter:brightness(1.08) saturate(1.08)}
+.forest-tree-group{position:absolute;right:0;bottom:5%;width:53%;aspect-ratio:1;z-index:5;transform:translateX(var(--depth-x,0px)) rotate(var(--tree-lean));transform-origin:83% 94%}
+.forest-tree-sprite{position:absolute;inset:0;overflow:hidden;filter:brightness(1.03) saturate(1.08)}
+.forest-tree-sprite>img{width:100%;height:100%}
+.forest-tree-eyes{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.tree-eye-aperture{transform-box:fill-box;transform-origin:center;transform:scaleY(1);transition:transform .13s ease-out}
+.forest-world.is-blinking .tree-eye-aperture{transform:scaleY(.025);transition-duration:.075s}
+.tree-eye-second{transition-delay:.025s}
+.forest-world:not(.is-awake) .tree-eye-aperture{transition:none}
+.tree-eye-look{transform:translate(var(--eye-x,-5px),var(--eye-y,0px))}
+.forest-ribbon-anchors{position:absolute;inset:0;width:100%;height:100%;fill:none;stroke:#c7312b;stroke-width:12;stroke-linecap:round;filter:drop-shadow(1px 2px 0 #311d25)}
+.forest-girl{position:absolute;top:23%;left:11%;width:46%;transform-origin:52% 0;transform:translateX(var(--girl-drift)) rotate(var(--girl-angle));filter:brightness(1) saturate(1)}
+.forest-girl>img{display:block;width:100%;height:auto}
+.forest-girl-shadow{position:absolute;left:59%;bottom:9%;width:16%;height:3%;background:#0d0c13;border-radius:50%;filter:blur(10px);opacity:.6;z-index:4;transform:translateX(var(--shadow-drift,0px))}
+.forest-fence{position:absolute;right:-3%;bottom:13%;width:27%;z-index:6;filter:brightness(.86) saturate(1.12);transform:translateX(calc(var(--depth-x,0px)*1.2))}
+.forest-botanicals{z-index:7;overflow:visible}
+.forest-flower,.forest-mushroom{position:absolute;filter:brightness(.97) saturate(1.08)}
+.forest-flower-left{width:7.5%;left:7%;bottom:14%;rotate:-10deg}
+.forest-mushroom-right{width:7.4%;right:12%;bottom:9%}
+.forest-flower-right{width:8%;right:4%;bottom:17%;rotate:7deg}
+.forest-mushroom-left{width:6.6%;left:21%;bottom:17%;filter:brightness(.86) saturate(1.03);rotate:-5deg}
+.forest-inkcap{width:6.3%;right:23%;bottom:13%;rotate:6deg}
+.forest-bellflower-back{width:4.6%;left:29%;bottom:29%;filter:brightness(.76) saturate(.85);rotate:-9deg}
+.botanical-bellflower{--sway-duration:8.4s;--blink-duration:7.7s;--blink-delay:-2.4s}
+.botanical-chanterelle{--sway-duration:6.9s;--blink-duration:6.3s;--blink-delay:-4.1s}
+.botanical-inkcap{--sway-duration:10s;--blink-duration:8.7s;--blink-delay:-1.1s}
+.forest-plant-sway{display:block;transform-origin:50% 95%;transform:rotate(var(--plant-bend))}
+.forest-flower-right .botanical{--blink-delay:-1.3s;--sway-duration:8s}
+.forest-mushroom-left .botanical{--blink-delay:-4.7s}
+.forest-world:not(.is-awake) .botanical,.forest-world:not(.is-awake) .botanical>img{animation-play-state:paused!important}
+.forest-grasses{position:absolute;inset:0;z-index:8}
+.forest-grass{position:absolute;height:auto;transform-origin:50% 94%;transform:skewX(var(--grass-bend));filter:brightness(.9) saturate(1.2)}
+.grass-one{width:18%;left:-5%;bottom:6%;scale:-1 1}
+.grass-two{width:11%;left:16%;bottom:12%;filter:brightness(.85) saturate(1.15)}
+.grass-three{width:21%;right:-7%;bottom:4%}
+.grass-four{width:12%;right:19%;bottom:4%;scale:-1 1}
+.grass-one,.grass-four{transform:skewX(calc(var(--grass-bend)*-1))}
+.grass-five{width:8%;right:14%;bottom:26%;filter:brightness(.78) saturate(1.05);z-index:-1}
+.forest-pumpkins{position:absolute;z-index:9;filter:brightness(.89) saturate(1.1);transform:translateX(calc(var(--depth-x,0px)*1.5))}
+.pumpkins-left{width:23%;left:-7%;bottom:-2%;rotate:5deg}
+.pumpkins-right{width:20%;right:-5%;bottom:-2%;scale:-1 1;rotate:-6deg}
+.forest-fog{position:absolute;max-width:none;pointer-events:none;transform:translateX(var(--fog-drift));filter:saturate(.5)}
+.forest-fog-back{width:65%;height:34%;object-fit:fill;bottom:10%;left:27%;opacity:.18;z-index:4}
+.forest-fog-front{width:78%;height:23%;object-fit:fill;bottom:0;left:8%;opacity:.14;z-index:10}
+.forest-leaves{position:absolute;inset:0;z-index:11;opacity:var(--leaf-opacity)}
+.forest-leaves i{position:absolute;left:var(--leaf-x,30%);top:var(--leaf-y,68%);width:12px;height:6px;background:#a98a62;border:1px solid #49393a;border-radius:0 80% 0 80%;transform:rotate(var(--leaf-turn,0deg));opacity:.7}
+.forest-leaves i:nth-child(2){margin-left:120px;margin-top:60px;scale:.7;rotate:40deg}
+.forest-leaves i:nth-child(3){margin-left:-100px;margin-top:-40px;scale:.8;rotate:90deg}
+@keyframes forest-twinkle{from{opacity:calc(var(--star-opacity)*.35);transform:scale(.8)}to{opacity:var(--star-opacity);transform:scale(1.12)}}
+@media(min-width:1600px){.forest-tree-group{right:1%;width:51%}.forest-girl-shadow{left:61%}}
+@media(min-width:761px) and (max-width:1100px){.contact{--forest-height:760px}.contact-copy{width:34%}.contact h2{font-size:44px}.forest-tree-group{width:50%;right:1%;bottom:7%}.forest-chapel{width:18%;left:35%;bottom:34%}.forest-world::after{background:linear-gradient(180deg,#17151f,transparent 12%,transparent 90%,#17151f),radial-gradient(ellipse at 10% 38%,#17151fe8,#17151f77 23%,transparent 48%)}}
+@media(max-width:760px){
+ .contact{--forest-height:clamp(620px,135vw,880px)}
+ .forest-world{width:100%;height:var(--forest-height);mask-image:none}
+ .forest-world::after{background:linear-gradient(180deg,#17151f 0%,transparent 9%,transparent 91%,#17151f 100%)}
+ .forest-sky{background-position:38% top}
+ .forest-tree-group{width:106%;right:-12%;bottom:9%}
+ .forest-moon{width:58px;left:54%;top:8%}
+ .forest-moon-halo{left:calc(54% - 51px);top:calc(8% - 51px);width:160px;height:160px}
+ .forest-clouds>img{width:130%;height:24%;left:-10%;top:4%}.forest-clouds>img+img{left:18%;top:27%;width:120%;height:18%}
+ .forest-cemetery{width:210%;max-width:none;left:-45%;height:40%;bottom:28%;opacity:.88}
+ .forest-chapel{left:3%;bottom:40%;width:41%;filter:brightness(.88) saturate(1.1)}
+ .forest-distance img:first-child{width:50%;left:-30%;bottom:20%;opacity:.7}
+ .forest-distance img:last-child{display:none}
+ .forest-ground{width:180%;max-width:none;left:-40%;height:48%;bottom:0}
+ .forest-girl-shadow{left:25%;bottom:13%;width:34%;height:2%}
+ .forest-fence{width:50%;right:-14%;bottom:17%;opacity:.88}
+ .forest-grass{filter:brightness(.87) saturate(1.15)}
+ .grass-one{width:29%;left:-13%;bottom:7%}.grass-two{width:19%;left:6%;bottom:15%}.grass-three{width:32%;right:-17%;bottom:7%}.grass-four{width:18%;right:6%;bottom:8%}.grass-five{display:none}
+ .forest-flower-left{width:15%;left:3%;bottom:17%}.forest-mushroom-right{width:15%;right:6%;bottom:14%}.forest-flower-right{width:13%;right:1%;bottom:25%}.forest-mushroom-left{width:12%;left:17%;bottom:25%}.forest-inkcap{width:13%;right:18%;bottom:10%}.forest-bellflower-back{display:none}
+ .pumpkins-left{width:37%;left:-14%;bottom:-.5%}.pumpkins-right{width:34%;right:-12%;bottom:-1%}
+ .forest-fog-back{width:110%;left:0;bottom:12%}.forest-fog-front{width:125%;left:-10%;bottom:1%;height:20%}
+ .contact-layout{display:block;min-height:0;padding:calc(var(--forest-height) - 12px) 0 40px}
+ .contact-copy{width:100%;max-width:500px;padding:0;text-shadow:none}
+ .contact h2{font-size:44px}.contact-bottom{margin-top:0}
+}
+@media(max-width:370px){.contact h2{font-size:38px}.forest-tree-group{width:115%;right:-19%;bottom:12%}.forest-chapel{width:45%;left:1%}.forest-mushroom-left{display:none}}
+@media(prefers-reduced-motion:reduce){.forest-star{animation:none!important}.tree-eye-aperture{transition:none!important}}

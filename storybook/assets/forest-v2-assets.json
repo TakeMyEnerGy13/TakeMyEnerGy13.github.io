@@ -1,0 +1,128 @@
+[
+  {
+    "name": "chapel",
+    "source": "exec-b9a5b830-2da8-4fbc-b949-0273b0fd557f.png",
+    "sourceAlpha": true,
+    "format": "webp",
+    "width": 600,
+    "height": 800,
+    "channels": 4,
+    "premultiplied": true,
+    "hasAlpha": true,
+    "size": 138026
+  },
+  {
+    "name": "cemetery",
+    "source": "exec-9ea10f92-9f14-4fc7-8aec-40526673424e.png",
+    "sourceAlpha": true,
+    "format": "webp",
+    "width": 1800,
+    "height": 600,
+    "channels": 4,
+    "premultiplied": true,
+    "hasAlpha": true,
+    "size": 356782
+  },
+  {
+    "name": "fence",
+    "source": "exec-6606e4a4-bb8f-4005-b2f4-00865a97432b.png",
+    "sourceAlpha": true,
+    "format": "webp",
+    "width": 850,
+    "height": 567,
+    "channels": 4,
+    "premultiplied": true,
+    "hasAlpha": true,
+    "size": 134424
+  },
+  {
+    "name": "pumpkins",
+    "source": "exec-79c1bffb-cbf5-4022-b19b-039b71b8e8d7.png",
+    "sourceAlpha": true,
+    "format": "webp",
+    "width": 650,
+    "height": 433,
+    "channels": 4,
+    "premultiplied": true,
+    "hasAlpha": true,
+    "size": 92562
+  },
+  {
+    "name": "grass-green",
+    "source": "exec-75fea980-d22d-4918-b68a-1da0e8327972.png",
+    "sourceAlpha": true,
+    "format": "webp",
+    "width": 600,
+    "height": 400,
+    "channels": 4,
+    "premultiplied": true,
+    "hasAlpha": true,
+    "size": 63080
+  },
+  {
+    "name": "fern",
+    "source": "exec-66b1290b-1876-44da-94e8-405a069a085d.png",
+    "sourceAlpha": true,
+    "format": "webp",
+    "width": 600,
+    "height": 400,
+    "channels": 4,
+    "premultiplied": true,
+    "hasAlpha": true,
+    "size": 96026
+  },
+  {
+    "name": "bellflower-blink",
+    "source": "exec-d9477873-be30-4184-8cfa-bec0f1a4d9c6.png",
+    "sourceAlpha": true,
+    "format": "webp",
+    "width": 800,
+    "height": 600,
+    "channels": 4,
+    "premultiplied": true,
+    "hasAlpha": true,
+    "size": 114284
+  },
+  {
+    "name": "chanterelle-blink",
+    "source": "exec-241da90c-468f-4711-8126-8ca1049bc35c.png",
+    "sourceAlpha": true,
+    "format": "webp",
+    "width": 800,
+    "height": 600,
+    "channels": 4,
+    "premultiplied": true,
+    "hasAlpha": true,
+    "size": 109948
+  },
+  {
+    "name": "inkcap-blink",
+    "source": "exec-ff6d944b-5ff5-48c5-89f7-8615420a0f44.png",
+    "sourceAlpha": true,
+    "format": "webp",
+    "width": 800,
+    "height": 600,
+    "channels": 4,
+    "premultiplied": true,
+    "hasAlpha": true,
+    "size": 87394
+  },
+  {
+    "name": "tree-rest",
+    "source": "exec-24d4a005-95c4-41db-a295-13db87ee7793.png",
+    "format": "webp",
+    "width": 800,
+    "height": 800,
+    "channels": 4,
+    "premultiplied": true,
+    "hasAlpha": true,
+    "size": 181278
+  },
+  {
+    "name": "sky",
+    "source": "exec-71585570-633f-4651-8a0b-f19c78714ed4.png",
+    "width": 1600,
+    "height": 900,
+    "size": 194740
+  }
+]

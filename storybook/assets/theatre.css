@@ -1,0 +1,80 @@
+.prologue{min-height:900px;background:#100e13}
+.forest-stage.stage-world{inset:auto auto 32px 50%;width:clamp(1120px,112vw,1560px);height:auto;aspect-ratio:1672/941;translate:-66% 0;z-index:0;transform:none;will-change:auto;mask-image:linear-gradient(transparent,#000 7%),linear-gradient(90deg,#000 84%,rgba(0,0,0,.94) 88%,rgba(0,0,0,.65) 92%,rgba(0,0,0,.22) 96%,transparent 100%);mask-composite:intersect;--dance-duration:1.8s}
+.stage-backdrop{position:absolute;width:100%;height:100%;inset:0;object-fit:fill;transform:translate3d(calc(var(--scene-x,0px)*.35),calc(var(--scene-y,0px)*.35),0)}
+.hero-shade{z-index:1;pointer-events:none;background:linear-gradient(90deg,#100e13,rgba(16,14,19,.45) 12%,transparent 30%,transparent 70%,rgba(16,14,19,.45) 88%,#100e13),linear-gradient(0deg,var(--ink),transparent 22%,transparent 62%,rgba(16,14,19,.85) 84%,#100e13)}
+.hero-copy{z-index:2;top:120px;left:24px;right:24px;max-width:none;transform:none;pointer-events:none;text-align:center}
+.hero-copy h1{font-size:clamp(44px,5.2vw,72px);max-width:1100px;margin:0 auto;line-height:1.13}
+.hero-copy h1:focus{outline:none}
+.hero-description{max-width:620px;margin:16px auto 0;font-size:16px;line-height:1.8;text-shadow:0 2px 12px #100e13}
+.hero-description .desktop-break{display:none}
+.hero-ticket{position:absolute;left:50%;bottom:32px;translate:-50% 0;z-index:2;margin:0;white-space:nowrap}
+.stage-atmosphere{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;transform:translate3d(calc(var(--scene-x,0px)*.35),calc(var(--scene-y,0px)*.35),0)}
+.stage-mist{position:absolute;pointer-events:none;z-index:2;transform:translate3d(calc(var(--scene-x,0px)*.7),calc(var(--scene-y,0px)*.7),0)}
+.stage-mist img{width:100%;height:100%;object-fit:fill;animation:mist-drift 14s ease-in-out infinite alternate;animation-play-state:paused}
+.mist-distant{left:39%;bottom:21%;width:58%;height:47%;opacity:.22;filter:blur(.5px)}
+.mist-foreground{left:35%;bottom:9%;width:65%;height:28%;opacity:.16;z-index:4;filter:blur(1px);mask-image:linear-gradient(transparent,#000 18%,#000 70%,transparent)}
+.mist-foreground img{animation-name:mist-drift-front;animation-duration:19s;animation-delay:-7s}
+.stage-cast{position:absolute;inset:0;z-index:3;transform:translate3d(var(--scene-x,0px),var(--scene-y,0px),0)}
+.dancer{position:absolute;bottom:16%;padding:0;width:15%;aspect-ratio:1;isolation:isolate;border-radius:50%;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.dancer::before{content:"";position:absolute;bottom:1%;left:25%;width:55%;height:4%;background:radial-gradient(ellipse,#160e15aa,transparent 70%);filter:blur(1.5px);animation:contact-shadow .45s ease-in-out infinite alternate;animation-delay:var(--phase);animation-play-state:paused;pointer-events:none}
+.dancer-left{left:44%;--phase:-.45s;--facing:1;--shadow-angle:32deg;transform:rotate(-7deg)}
+.dancer-center{left:59%;width:21%;bottom:16%;--phase:0s;--facing:1;--shadow-angle:12deg}
+.dancer-right{left:80%;width:14%;bottom:22%;--phase:-.9s;--facing:-1;--shadow-angle:-18deg;transform:rotate(6deg)}
+.dancer-body{display:block;width:100%;height:100%;transform-origin:50% 100%;animation:dancer-bounce .45s ease-in-out infinite alternate;animation-delay:var(--phase);animation-play-state:paused}
+.dancer-sprite,.shadow-sprite{display:block;width:100%;height:100%;background:url('./imp-dance.webp') 0 0/200% 200% no-repeat;transform:scaleX(var(--facing));animation:dance-frames var(--dance-duration) step-end infinite;animation-delay:var(--phase);animation-play-state:paused}
+.dancer-floor-shadow{position:absolute;inset:0;z-index:-1;pointer-events:none;transform-origin:50% 96%;opacity:.52;filter:blur(1.5px);animation:shadow-breathe .45s ease-in-out infinite alternate;animation-delay:var(--phase);animation-play-state:paused}
+.shadow-projection{display:block;width:100%;height:100%;transform-origin:50% 96%;transform:skewX(var(--shadow-angle)) scaleY(-.19)}
+.shadow-sprite{filter:brightness(0);mask-image:linear-gradient(#0004 4%,#000b 34%,#000 87%)}
+.dancer:hover .dancer-sprite,.dancer:focus-visible .dancer-sprite{filter:brightness(1.16)}
+.dancer.is-leaping .dancer-body{animation:imp-leap .65s cubic-bezier(.2,.7,.3,1) both!important}
+.dancer.is-leaping .dancer-floor-shadow{animation:shadow-leap .65s ease-out both!important}
+.dancer.is-leaping::before{animation:none;opacity:.12}
+.stage-proscenium{position:absolute;inset:0;z-index:6;background:url('./theatre-clean.webp') 0 0/100% 100%;pointer-events:none;clip-path:polygon(evenodd,28% 0,100% 0,100% 100%,28% 100%,28% 0,36% 18%,96% 18%,98% 89.5%,33% 89.5%,36% 18%);transform:translate3d(calc(var(--scene-x,0px)*.35),calc(var(--scene-y,0px)*.35),0)}
+.stage-world.is-running .dancer-body,.stage-world.is-running .dancer-sprite,.stage-world.is-running .shadow-sprite,.stage-world.is-running .dancer-floor-shadow,.stage-world.is-running .dancer::before,.stage-world.is-running .stage-mist img{animation-play-state:running}
+.music-toggle{position:fixed;right:24px;bottom:16px;z-index:10;width:118px;padding:0 0 2px;border-radius:50% 50% 12px 12px;isolation:isolate;touch-action:manipulation}
+.music-character{display:block;position:relative;width:96px;height:144px;margin:auto;transform-origin:50% 90%;filter:drop-shadow(0 4px 8px #100b13a0)}
+.violin-body{width:100%;height:100%}
+.violin-bow{position:absolute;left:5%;top:36%;width:124%;max-width:none;transform-origin:47% 67%;transform:translate(5%,1%) rotate(7deg)}
+.music-label{display:inline-flex;gap:6px;align-items:center;justify-content:center;font-size:12px;font-weight:600;background:#19151df0;border:1px solid var(--line);border-radius:24px;padding:5px 12px;color:var(--moon);min-height:32px}
+.music-state{font-size:14px;color:var(--ribbon)}
+.music-toggle:hover .music-label,.music-toggle:focus-visible .music-label{border-color:var(--ribbon)}
+.music-toggle:hover .music-character{filter:drop-shadow(0 4px 8px #100b13a0) brightness(1.08)}
+.music-note{position:absolute;right:-8px;top:30px;font:28px var(--display);color:#e6bb78;opacity:0;pointer-events:none}.note-two{right:10px;top:0}
+.music-toggle.is-playing .music-character{animation:violin-sway 1.8s ease-in-out infinite}
+.music-toggle.is-playing .violin-bow{animation:bow-stroke .9s ease-in-out infinite alternate}
+.music-toggle.is-playing .music-note{animation:note-drift 2.7s ease-out infinite}.music-toggle.is-playing .note-two{animation-delay:1.35s}
+.music-toggle.is-playing .music-state{color:#e6bb78}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.motion-paused .stage-world *,.motion-paused .stage-world *::before,.motion-paused .music-toggle *{animation:none!important}
+.motion-paused .stage-backdrop,.motion-paused .stage-cast,.motion-paused .stage-atmosphere,.motion-paused .stage-proscenium,.motion-paused .stage-mist{transform:none}
+.motion-paused .dancer.is-leaping .dancer-body,.motion-paused .dancer.is-leaping .dancer-floor-shadow{animation:none!important}
+@keyframes dance-frames{0%,100%{background-position:0 0}25%{background-position:100% 0}50%{background-position:0 100%}75%{background-position:100% 100%}}
+@keyframes dancer-bounce{from{transform:translateY(0) scale(1.02,.98) rotate(-2deg)}to{transform:translateY(-5%) scale(.98,1.02) rotate(2deg)}}
+@keyframes imp-leap{0%,100%{transform:translateY(0) rotate(0)}32%{transform:translateY(-27%) rotate(-12deg)}70%{transform:translateY(-12%) rotate(9deg)}}
+@keyframes shadow-breathe{from{opacity:.58;filter:blur(1.2px);transform:scaleX(.98)}to{opacity:.4;filter:blur(2px);transform:scaleX(1.05)}}
+@keyframes contact-shadow{from{opacity:.75;transform:scaleX(.95)}to{opacity:.3;transform:scaleX(1.04)}}
+@keyframes shadow-leap{0%,100%{opacity:.5;filter:blur(1.7px);transform:scaleX(1)}32%{opacity:.16;filter:blur(4px);transform:scaleX(1.2)}70%{opacity:.3;filter:blur(2.8px);transform:scaleX(1.08)}}
+@keyframes mist-drift{from{transform:translate(-3%,4%) scale(.98) rotate(-1deg)}to{transform:translate(5%,-4%) scale(1.04) rotate(1deg)}}
+@keyframes mist-drift-front{from{transform:translate(5%,0) scaleX(-1)}to{transform:translate(-6%,4%) scaleX(-1.06)}}
+@keyframes violin-sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg) translateY(-3px)}}
+@keyframes bow-stroke{from{transform:translate(-6%,6%) rotate(2deg)}to{transform:translate(8%,-3%) rotate(-2deg)}}
+@keyframes note-drift{0%{opacity:0;transform:translate(0,0) rotate(-10deg)}25%{opacity:.8}100%{opacity:0;transform:translate(18px,-45px) rotate(15deg)}}
+@media(min-width:1600px){.prologue{max-height:1200px}.hero-copy{top:128px;left:24px;max-width:none}.forest-stage.stage-world{width:min(104vw,1900px)}}
+@media(min-width:761px) and (max-width:1100px){.hero-copy{top:120px}.hero-copy h1{font-size:56px}.forest-stage.stage-world{width:1220px;bottom:80px}.hero-description{max-width:540px}}
+@media(max-width:760px){
+ .prologue{height:100svh;min-height:800px;max-height:none}
+ .forest-stage.stage-world{width:680px;bottom:96px;height:auto;top:auto;left:50%;right:auto}
+ .hero-copy{top:120px;left:24px;right:24px;max-width:none}
+ .hero-copy h1{font-size:clamp(40px,9vw,60px);max-width:540px}
+ .hero-description{font-size:13px;margin-top:20px;max-width:340px}
+ .hero-shade{background:linear-gradient(90deg,#100e13b0,transparent 25%,transparent 75%,#100e13b0),linear-gradient(180deg,#100e13 0%,#100e13 27%,rgba(16,14,19,.75) 36%,transparent 52%,transparent 71%,var(--ink) 92%)}
+ .hero-ticket{bottom:48px;min-height:56px;font-size:12px;margin:0}
+ .dancer-left{left:45%;width:15%;bottom:16%}.dancer-center{left:59%;width:21%;bottom:16%}.dancer-right{left:78%;width:13%;bottom:22%}
+ .music-toggle{right:4px;bottom:10px;width:80px}.music-character{width:52px;height:78px}.music-label{font-size:10px;padding:3px 8px;min-height:28px}.music-note{font-size:20px;top:15px}
+ .motion-toggle .motion-label{max-width:0}.motion-toggle:hover .motion-label,.motion-toggle:focus-visible .motion-label{max-width:170px}
+ .site-footer{padding-bottom:150px}.contact-bottom{padding-right:36px}
+}
+@media(min-width:500px) and (max-width:760px){.forest-stage.stage-world{width:980px}.prologue{min-height:900px}}
+@media(max-width:370px){.hero-copy{top:112px}.hero-copy h1{font-size:36px}.hero-description{font-size:12px}.forest-stage.stage-world{width:600px;bottom:96px}.prologue{min-height:760px}.hero-ticket{left:calc(50% - 24px);bottom:48px;padding-inline:20px;font-size:11px;gap:16px}.hero-ticket .ticket-arrow{padding-left:16px}}
+@media(max-width:760px){.mist-foreground{opacity:.12}}
+@media(prefers-reduced-motion:reduce){.stage-world *,.stage-world *::before,.music-toggle *{animation:none!important;transition:none!important}.stage-backdrop,.stage-cast,.stage-atmosphere,.stage-proscenium,.stage-mist{transform:none!important}}
