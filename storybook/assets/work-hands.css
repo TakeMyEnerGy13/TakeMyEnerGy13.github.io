@@ -54,7 +54,6 @@
 .work-project-whiterock{--poster-paper:#dedccd;--poster-type:#374657;--poster-text:#303a44;--poster-tilt:-.6deg;--print-angle:-2.3deg}
 .work-project-portfolio{--poster-paper:#cccad0;--poster-type:#393447;--poster-text:#35313c;--poster-tilt:-.7deg;--print-angle:-1.5deg}
 .work-project:nth-child(even){margin-top:72px}
-@media(min-width:761px){.work-project-travel:last-child{grid-column:1/-1;justify-self:center;width:calc((100% - var(--project-gap))/2)}}
 .work-project h3{position:relative;z-index:2;font:clamp(46px,5.2vw,72px)/1.15 var(--display);letter-spacing:-.05em;text-align:left;color:var(--poster-type);margin:0 0 40px}
 .work-project-hrum h3{font-size:clamp(68px,7vw,100px);line-height:1;letter-spacing:-.06em}
 .work-project-open{position:absolute;inset:0;z-index:4;width:100%;height:100%;padding:0;background:transparent;border:0;cursor:pointer}
