@@ -147,7 +147,8 @@ function particles(seed){
 }
 
 export async function createEnergyScene(canvas,initiallyPaused=false){
- const gl=canvas.getContext('webgl',{alpha:true,antialias:true,stencil:true,powerPreference:'low-power',premultipliedAlpha:false});
+ // Composite additive light against the Hero's black background inside WebGL.
+ const gl=canvas.getContext('webgl',{alpha:false,antialias:true,stencil:true,powerPreference:'low-power',premultipliedAlpha:false});
  if(!gl)throw new Error('WebGL is not supported');
  const [earth,night,normal,...logos]=await Promise.all([
   imageFromURL('./assets/earth.jpg'),imageFromURL('./assets/earth-night.png'),imageFromURL('./assets/earth-normal.jpg'),
@@ -186,7 +187,7 @@ export async function createEnergyScene(canvas,initiallyPaused=false){
   texture(earth,0);texture(night,1);texture(normal,2);gl.useProgram(mainProgram);
   gl.uniform1i(mainUniforms.uEarth,0);gl.uniform1i(mainUniforms.uNight,1);gl.uniform1i(mainUniforms.uNormal,2);
   gl.uniform3fv(mainUniforms['uLogoColors[0]'],new Float32Array(brands.flatMap(brand=>brand.surfaceLight||brand.glow||brand.color)));
-  gl.enable(gl.DEPTH_TEST);gl.clearColor(0,0,0,0);
+  gl.enable(gl.DEPTH_TEST);gl.clearColor(0,0,0,1);
  }
  initialize();
  let paused=initiallyPaused,visible=true,lost=false,frame=0,previous=0,elapsed=0;

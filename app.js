@@ -2,7 +2,7 @@ import { createPortalScene } from './portal-scene.js';
 import { createHelmetScene } from './helmet-scene.js';
 import { initializeLanguage, translate } from './i18n.js';
 import { createEngineScene } from './engine-scene.js';
-import { createEnergyScene } from './scene.js';
+import { createEnergyScene } from './scene.js?v=20261026-halos2';
 import { createVibeSection } from './vibe.js';
 
 const canvas = document.querySelector('#energy-scene');
