@@ -56,13 +56,24 @@ void main(){
 }`;
 const particleVertex = `
 attribute vec3 aPosition; attribute vec3 aNormal;
-uniform vec3 uPosition; uniform float uTime; uniform float uAspect; uniform float uRatio;
+uniform vec3 uPosition; uniform float uTime; uniform float uAspect; uniform float uRatio; uniform float uBreeze;
 varying float vAlpha; varying float vDepth; varying float vSoft;
 void main(){
- vec3 p=aPosition;p.x+=sin(uTime*.25+aNormal.z)*.035;p.y+=cos(uTime*.18+aNormal.z)*.045;p+=uPosition;
+ vec3 p=aPosition;
+ float phase=aNormal.z,spark=1.-step(20.,aNormal.x),drift=uBreeze*spark;
+ float pace=.22+.12*(.5+.5*sin(phase*2.7));
+ p.x+=sin(uTime*.25+phase)*.035;
+ p.y+=cos(uTime*.18+phase)*.045;
+ // Slow shared air movement plus an individual, bounded wandering path.
+ p.x+=drift*(sin(uTime*.16+aPosition.y*.65)*.10+sin(uTime*pace+phase)*.16);
+ p.y+=drift*(sin(uTime*.13+aPosition.x*.55)*.06+cos(uTime*pace*.79+phase*1.8)*.18);
+ p.z+=drift*sin(uTime*pace*.63+phase*2.3)*.06;
+ p+=uPosition;
  float d=10.-p.z;gl_Position=vec4(p.x*3.4/uAspect,p.y*3.4,(d*30.1-6.)/29.9,d);
  vDepth=p.z;vSoft=step(20.,aNormal.x);
- gl_PointSize=aNormal.x*uRatio;vAlpha=aNormal.y*(.85+.15*sin(uTime*.7+aNormal.z));
+ gl_PointSize=aNormal.x*uRatio;
+ float shimmer=mix(sin(uTime*.7+phase),sin(uTime*(.35+pace*.4)+phase),drift);
+ vAlpha=aNormal.y*(.85+.15*shimmer);
 }`;
 const particleFragment = `
 precision highp float; uniform vec3 uColor; uniform vec4 uPlanet; uniform vec2 uViewport;
@@ -181,7 +192,7 @@ export async function createEnergyScene(canvas,initiallyPaused=false){
  function initialize(){
   mainProgram=program(vertexSource,fragmentSource);particleProgram=program(particleVertex,particleFragment);
   mainUniforms=uniforms(mainProgram,['uRotation','uPosition','uScale','uAspect','uKind','uColor','uEarth','uNight','uNormal','uLogoPositions[0]','uLogoColors[0]']);
-  particleUniforms=uniforms(particleProgram,['uPosition','uTime','uAspect','uRatio','uColor','uPlanet','uViewport']);
+  particleUniforms=uniforms(particleProgram,['uPosition','uTime','uAspect','uRatio','uBreeze','uColor','uPlanet','uViewport']);
   mainAttributes=['aPosition','aNormal','aUV'].map(n=>gl.getAttribLocation(mainProgram,n));particleAttributes=['aPosition','aNormal'].map(n=>gl.getAttribLocation(particleProgram,n));
   globe=buffer(globeData,8);brandMeshes=brands.map(b=>buffer(b.data,8));clouds=particleData.map(d=>buffer(d,6));
   texture(earth,0);texture(night,1);texture(normal,2);gl.useProgram(mainProgram);
@@ -219,6 +230,7 @@ export async function createEnergyScene(canvas,initiallyPaused=false){
   drawMesh(globe,earthPosition,earthScale,earthRotation,0);
   gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE);gl.depthMask(false);drawMesh(globe,earthPosition,earthScale*1.012,earthRotation,2);
   gl.useProgram(particleProgram);gl.uniform1f(particleUniforms.uAspect,width/height);gl.uniform1f(particleUniforms.uTime,elapsed);gl.uniform1f(particleUniforms.uRatio,ratio);gl.uniform4f(particleUniforms.uPlanet,...earthPosition,earthScale);gl.uniform2f(particleUniforms.uViewport,width,height);
+  gl.uniform1f(particleUniforms.uBreeze,1);
   brands.forEach((brand,i)=>{attributes(clouds[i],particleAttributes,6);gl.uniform3fv(particleUniforms.uPosition,logoPositions[i]);gl.uniform3fv(particleUniforms.uColor,brand.glow||brand.color);gl.drawArrays(gl.POINTS,0,clouds[i].count);});
   gl.disable(gl.STENCIL_TEST);gl.disable(gl.BLEND);gl.depthMask(true);gl.useProgram(mainProgram);
   brands.forEach((brand,i)=>{const t=brand.tilt,h=hover[i];drawMesh(brandMeshes[i],logoPositions[i],brand.scale*(compact?.8:1),rotation(t[0]+h.y*.16,t[1]+h.x*.20,t[2]-h.x*.07+h.y*.04),1,brand.color);});
