@@ -44,14 +44,17 @@
   html:not(.motion-paused) .work-escape[data-rescue="won"] .work-thanks{animation:work-thanks-pop .45s steps(4,end) both}
 }
 @keyframes work-thanks-pop{from{opacity:0;transform:translateX(-50%) translateY(8px) rotate(-7deg) scale(.85)}to{opacity:1;transform:translateX(-50%) rotate(-4deg) scale(1)}}
-.work-projects{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start;padding:12px 8px 20px;max-width:1220px}
+.work-projects{--project-gap:56px;position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--project-gap);align-items:start;padding:12px 8px 20px;max-width:1220px}
 .work-project{--poster-paper:#e4d6b9;--poster-type:#8c352e;--poster-text:#322a25;--poster-tilt:-1deg;--print-angle:-2deg;position:relative;isolation:isolate;color:var(--poster-text);color-scheme:light}
 .work-project-sheet{position:relative;isolation:isolate;padding:48px 44px 36px;transform:rotate(var(--poster-tilt));transform-origin:50% 12%;filter:drop-shadow(3px 8px 5px #0e0b1080)}
 .work-project-sheet::before{content:"";position:absolute;inset:0;z-index:-2;background:var(--paper-fiber),var(--poster-paper);clip-path:polygon(.5% 1%,22% .3%,41% .8%,68% 0,99.2% .8%,99.7% 23%,99.1% 52%,100% 78%,100% calc(100% - var(--paper-fold,0px)),calc(100% - var(--paper-fold,0px)) 100%,78% 100%,57% 99.3%,32% 99.8%,.7% 99%,0 73%,.8% 49%,0 25%)}
 .work-project-sheet::after{content:"";position:absolute;right:0;bottom:0;width:32px;height:32px;z-index:3;background:var(--paper-fiber),linear-gradient(135deg,#fff6dc70,var(--poster-paper) 52%,#17111955);clip-path:polygon(0 0,100% 0,0 100%);transform:scale(0);transform-origin:100% 100%;filter:drop-shadow(-2px -2px 1px #17111960);pointer-events:none}
-.work-project-travel{--poster-paper:#45333f;--poster-type:#e7d6b5;--poster-text:#e7d6b5;--poster-tilt:.8deg;--print-angle:2.5deg;margin-top:72px}
+.work-project-travel{--poster-paper:#45333f;--poster-type:#e7d6b5;--poster-text:#e7d6b5;--poster-tilt:.8deg;--print-angle:2.5deg}
 .work-project-learny{--poster-paper:#becdc4;--poster-type:#254d4d;--poster-text:#243d3c;--poster-tilt:.65deg;--print-angle:1.7deg}
-.work-project-whiterock{--poster-paper:#dedccd;--poster-type:#374657;--poster-text:#303a44;--poster-tilt:-.6deg;--print-angle:-2.3deg;margin-top:72px}
+.work-project-whiterock{--poster-paper:#dedccd;--poster-type:#374657;--poster-text:#303a44;--poster-tilt:-.6deg;--print-angle:-2.3deg}
+.work-project-portfolio{--poster-paper:#cccad0;--poster-type:#393447;--poster-text:#35313c;--poster-tilt:-.7deg;--print-angle:-1.5deg}
+.work-project:nth-child(even){margin-top:72px}
+@media(min-width:761px){.work-project-travel:last-child{grid-column:1/-1;justify-self:center;width:calc((100% - var(--project-gap))/2)}}
 .work-project h3{position:relative;z-index:2;font:clamp(46px,5.2vw,72px)/1.15 var(--display);letter-spacing:-.05em;text-align:left;color:var(--poster-type);margin:0 0 40px}
 .work-project-hrum h3{font-size:clamp(68px,7vw,100px);line-height:1;letter-spacing:-.06em}
 .work-project-open{position:absolute;inset:0;z-index:4;width:100%;height:100%;padding:0;background:transparent;border:0;cursor:pointer}
@@ -103,11 +106,11 @@
   .work-escape{height:480px;margin-bottom:48px}
   .work-girl{height:450px}
   .work-hands{--hand-gap:195px}
-  .work-projects{gap:32px;padding-inline:0}
+  .work-projects{--project-gap:32px;padding-inline:0}
   .work-project-sheet{padding:40px 32px 32px}
   .work-project h3{font-size:clamp(36px,5.2vw,60px)}
   .work-project-hrum h3{font-size:clamp(64px,7.2vw,88px)}
-  .work-project-travel,.work-project-whiterock{margin-top:40px}
+  .work-project:nth-child(even){margin-top:40px}
 }
 @media(max-width:760px){
   .work .section-heading{margin-bottom:24px}
@@ -125,7 +128,8 @@
   .work-projects{grid-template-columns:1fr;gap:32px;padding:8px 3px 16px}
   .work-project{--poster-tilt:-.7deg}
   .work-project-sheet{padding:36px 28px 30px}
-  .work-project-travel,.work-project-whiterock{--poster-tilt:.6deg;margin-top:0}
+  .work-project-travel,.work-project-whiterock{--poster-tilt:.6deg}
+  .work-project:nth-child(even){margin-top:0}
   .work-project h3{font-size:clamp(32px,10vw,60px);margin-bottom:30px}
   .work-project-hrum h3{font-size:clamp(60px,17vw,88px)}
   .work-project-sheet>p{font-size:14px;margin:30px 0 28px}

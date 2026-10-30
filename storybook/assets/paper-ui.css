@@ -37,12 +37,14 @@
 .project-stage[data-website="travel"],.project-dialog[data-website="travel"]{--website-paper:#261131}
 .project-dialog[data-website="learny"]{--website-paper:#080a0c}
 .project-dialog[data-website="whiterock"]{--website-paper:#f4f3ee}
+.project-dialog[data-website="portfolio"]{--website-paper:#000}
 .project-stage[data-website]{aspect-ratio:1.72;background:var(--website-paper)}
 .project-stage[data-website] .project-scene{object-fit:contain;object-position:center;transform:none}
 /* Crop the captured browser rail from the right edge, keeping the page at its original ratio. */
 .work-project,.project-dialog{--screenshot-ratio:1.424;--screenshot-width:101.123596%}
 .work-project-learny,.project-dialog[data-website="learny"]{--screenshot-ratio:1.777777778;--screenshot-width:100%}
 .work-project-whiterock,.project-dialog[data-website="whiterock"]{--screenshot-ratio:1.755555556;--screenshot-width:101.265823%}
+.work-project-portfolio,.project-dialog[data-website="portfolio"]{--screenshot-ratio:1846/897;--screenshot-width:100%}
 .project-dialog[data-website] .case-art{--case-art-height:clamp(220px,42svh,380px);height:var(--case-art-height);display:flex;align-items:center;justify-content:center;margin:28px 28px 0;border:0;border-radius:5px 8px 4px 7px;background:var(--website-paper)}
 .case-screenshot{width:min(100%,calc(var(--case-art-height)*var(--screenshot-ratio)));aspect-ratio:var(--screenshot-ratio);overflow:hidden}
 .project-dialog[data-website] .case-art img{width:var(--screenshot-width);max-width:none;height:auto}

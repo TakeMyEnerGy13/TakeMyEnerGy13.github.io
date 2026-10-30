@@ -15,6 +15,14 @@ const projects = {
     stack: 'HTML / CSS / JavaScript',
     links: [{ label: 'Открыть сайт', url: 'https://clinic.whiterock.marketing/' }]
   },
+  portfolio: {
+    name: 'AI Engineer', title: 'AI Engineer',
+    image: './assets/site-portfolio.png', alt: 'Портфолио TakeMyEnerGy: Make AI actually work, планета и объёмные логотипы AI-инструментов',
+    summary: 'Моё портфолио AI Engineer. Минималистичная типографика, интерактивная планета и объёмные сцены объединяют проекты, опыт и контакты.',
+    features: ['Интерактивная Земля и объёмные логотипы AI-инструментов.', 'Авторские WebGL-сцены и анимации интерфейса.', 'Русская и английская версии, адаптивная вёрстка.'],
+    stack: 'HTML / CSS / JavaScript / WebGL / GSAP',
+    links: [{ label: 'Открыть сайт', url: 'https://takemyenergy13.github.io/' }, { label: 'Код на GitHub', url: 'https://github.com/TakeMyEnerGy13/TakeMyEnerGy13.github.io' }]
+  },
   hrum: {
     name: 'ХРУМ', title: 'ХРУМ',
     image: './assets/site-hrum.webp', alt: 'Сайт ХРУМ: оранжевый персонаж и заголовок «Заведи привычку»',
